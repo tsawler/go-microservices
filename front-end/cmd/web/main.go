@@ -9,7 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		render("home.page.tmpl", w)
+		render(w, "home.page.gohtml")
 	})
 
 	fmt.Println("Starting front end service on port 80")
@@ -19,8 +19,22 @@ func main() {
 	}
 }
 
-func render(t string, w http.ResponseWriter) {
-	tmpl, err := template.ParseFiles(fmt.Sprintf("./cmd/web/templates/%s", t))
+func render(w http.ResponseWriter, t string) {
+
+	partials := []string{
+		"./cmd/web/templates/base.layout.gohtml",
+		"./cmd/web/templates/header.partial.gohtml",
+		"./cmd/web/templates/footer.partial.gohtml",
+	}
+
+	var templateSlice []string
+	templateSlice = append(templateSlice, fmt.Sprintf("./cmd/web/templates/%s", t))
+
+	for _, x := range partials {
+		templateSlice = append(templateSlice, x)
+	}
+
+	tmpl, err := template.ParseFiles(templateSlice...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
