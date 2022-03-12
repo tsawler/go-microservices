@@ -1,11 +1,17 @@
-# RabbitMQ & Go
+# Working with Microservices in Go
 
-Start the server:
+From the root level of the project, execute this command:
 
-`go run consumer/consumer.go log.INFO log.WARNING`
+~~~
+make docker_build_up
+~~~
 
-Push from the client
+Then start the front end:
 
-`go run sender/sender.go`
+~~~
+cd front-end
+go run ./cmd/web
+~~~
 
-See the output on the server & client consoles.
+
+Hit the front end with your web browser at `http://locahost:80`
