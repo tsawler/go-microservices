@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  # listener
+  listener:
+    build:
+      context: .
+      dockerfile: ./listener.dockerfile
+    restart: always
+
+  broker:
+    build:
+      context: .
+      dockerfile: ./broker.dockerfile
+    ports:
+      - "8080:80"
+
+  # start rabbitmq
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
+  # start etcd
+  etcd:
+    image: docker.io/bitnami/etcd:3
+    ports:
+      - "2379:2379"
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    volumes:
+      - ./db-data/etcd/:/bitnami/etcd
+
+
+
