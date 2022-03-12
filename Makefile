@@ -16,9 +16,9 @@ start:
 	cd front-end && ./frontApp &
 
 stop:
-	@echo "Stopping back end..."
+	@echo "Stopping front end..."
 	@-pkill -SIGTERM -f "./frontApp"
-	@echo "Stopped back end!"
+	@echo "Stopped front end!"
 
 test:
 	@echo "Testing..."

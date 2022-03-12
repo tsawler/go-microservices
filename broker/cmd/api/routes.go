@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func routes() http.Handler {
+func (app *Config) routes() http.Handler {
 	mux := chi.NewRouter()
 
 	// specify who is allowed to connect to our API service
@@ -19,7 +19,7 @@ func routes() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Get("/", Home)
+	mux.Get("/", app.Home)
 
 	return mux
 }
