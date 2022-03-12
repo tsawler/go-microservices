@@ -41,8 +41,9 @@
                 output.innerHTML += `<br><strong>Response</strong>: ${data.message}`;
             }
         })
-
-        // display response
+        .catch((error) =>{
+            output.innerHTML += "<br><br><strong>Error: " + error;
+        })
     })
 </script>
 </body>
