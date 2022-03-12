@@ -16,7 +16,7 @@
                 <h1 class="mt-5">Test microservices</h1>
                 <hr>
                 <a id="btn" class="btn btn-outline-secondary" href="javascript:void(0)">Start</a>
-                <div id="output" class="mt-5 d-flex align-items-center" style="outline: 1px solid silver; padding: 2em;">
+                <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     Output shows here...
                 </div>
             </div>
@@ -29,7 +29,7 @@
 
     startBtn.addEventListener("click", function() {
         let now = new Date();
-        output.innerHTML = `Clicked start on ${now}...<br>Sending request...`;
+        output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
 
         // send request to main entrypoint for microservices
         fetch("http://localhost:8080")
@@ -38,7 +38,7 @@
             if (data.error) {
                 console.log(data.error)
             } else {
-                output.innerHTML += "Response: " + data.message;
+                output.innerHTML += `<br><strong>Response</strong>: ${data.message}`;
             }
         })
 
