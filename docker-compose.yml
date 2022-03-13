@@ -10,7 +10,7 @@ services:
     restart: always
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 1
 
   # broker - main entry point; we call this from the front end
   broker:
@@ -54,4 +54,17 @@ services:
       - "1025:1025"
       - "8025:8025"
     restart: always
+
+  #  start mongo, and ensure that data is stored to a mounted volume
+  mongo:
+    image: 'mongo:4.2.17-bionic'
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db
 
