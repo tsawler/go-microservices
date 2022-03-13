@@ -9,12 +9,13 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-// Consumer for receiving AMPQ events
+// Consumer is the type used for receiving AMPQ events
 type Consumer struct {
 	conn      *amqp.Connection
 	queueName string
 }
 
+// setup opens a channel and declares the exchange
 func (consumer *Consumer) setup() error {
 	channel, err := consumer.conn.Channel()
 	if err != nil {
@@ -36,6 +37,7 @@ func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 	return consumer, nil
 }
 
+// Payload is the type used for pushing events to RabbitMQ
 type Payload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
@@ -91,6 +93,7 @@ func (consumer *Consumer) Listen(topics []string) error {
 	return nil
 }
 
+// handlePayload takes an action based on the name of an event in the queue
 func handlePayload(payload Payload) {
 	// logic to process payload goes in here
 	switch payload.Name {
@@ -118,6 +121,8 @@ func handlePayload(payload Payload) {
 	}
 }
 
+// rpcPushToLogger pushes data to the logger-service via RPC, where
+// it gets stored into a mongo database
 func rpcPushToLogger(function string, data interface{}) (string, error) {
 	c, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
@@ -135,6 +140,8 @@ func rpcPushToLogger(function string, data interface{}) (string, error) {
 	return result, nil
 }
 
+// authenticate is a stub that we'll never actually use, but it is here
+// as we get used to how to interact with services
 func authenticate(payload Payload) error {
 	// TODO actually authenticate
 	log.Printf("Got payload of %v", payload)
