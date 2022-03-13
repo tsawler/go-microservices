@@ -19,7 +19,8 @@ func (app *Config) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Post("/", app.Home)
+	mux.Post("/", app.Broker)
+	mux.Post("/authenticate", app.BrokerAuth)
 
 	return mux
 }

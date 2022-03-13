@@ -30,6 +30,11 @@ restart_auth:
 	docker-compose build authentication-service && docker-compose up -d
 	@echo "Restarted!"
 
+restart_listener:
+	@echo "Stopping queue listener service"
+	docker-compose build queue-listener-service && docker-compose up -d
+	@echo "Restarted!"
+
 test:
 	@echo "Testing..."
 	go test -v ./...

@@ -101,6 +101,11 @@ func handlePayload(payload Payload) {
 		}
 		fmt.Println("Response from RPC:", res)
 
+	case "auth":
+		err := authenticate(payload)
+		if err != nil {
+			log.Println(err)
+		}
 	default:
 		// nothing to do
 	}
@@ -121,4 +126,9 @@ func rpcPushToLogger(function string, data interface{}) (string, error) {
 	}
 
 	return result, nil
+}
+
+func authenticate(payload Payload) error {
+	log.Printf("Got payload of %v", payload)
+	return nil
 }
