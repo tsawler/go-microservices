@@ -26,14 +26,18 @@
             let now = new Date();
             output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
 
+            const body = {
+                method: 'POST',
+            }
+
             // send request to main entrypoint for microservices
-            fetch("http://localhost:8080")
+            fetch("http://localhost:8080", body)
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.error) {
                         console.log(data.error)
                     } else {
-                        output.innerHTML += `<br><strong>Response</strong>: ${data.message}`;
+                        output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
                     }
                 })
                 .catch((error) =>{

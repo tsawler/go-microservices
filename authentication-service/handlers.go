@@ -20,7 +20,7 @@ func (app *config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	// TODO validate against database
 	payload := jsonResponse{
 		Error:   false,
-		Message: fmt.Sprintf("Authenticated user %s", requestPayload.Email),
+		Message: fmt.Sprintf("Logged in user %s", requestPayload.Email),
 		Data: User{
 			ID:        1,
 			FirstName: "Jack",

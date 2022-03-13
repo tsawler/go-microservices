@@ -20,9 +20,14 @@ stop:
 	@-pkill -SIGTERM -f "./frontApp"
 	@echo "Stopped front end!"
 
+restart_broker:
+	@echo "Stopping broker service"
+	docker-compose build broker-service && docker-compose up -d
+	@echo "Restarted!"
+
 restart_auth:
 	@echo "Stopping authentication service"
-	docker-compose build authentication-service && docker-compose restart authentication-service
+	docker-compose build authentication-service && docker-compose up -d
 	@echo "Restarted!"
 
 test:
