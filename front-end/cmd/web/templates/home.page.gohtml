@@ -14,3 +14,29 @@
         </div>
     </div>
 {{end}}
+
+{{define "js"}}
+    <script>
+        let startBtn = document.getElementById("btn");
+        let output = document.getElementById("output");
+
+        startBtn.addEventListener("click", function() {
+            let now = new Date();
+            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+
+            // send request to main entrypoint for microservices
+            fetch("http://localhost:8080")
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        console.log(data.error)
+                    } else {
+                        output.innerHTML += `<br><strong>Response</strong>: ${data.message}`;
+                    }
+                })
+                .catch((error) =>{
+                    output.innerHTML += "<br><br><strong>Error: " + error;
+                })
+        })
+    </script>
+{{end}}
