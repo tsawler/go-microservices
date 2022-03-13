@@ -27,6 +27,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     restart: always
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
 
   # a service to store logs
   log-service:
