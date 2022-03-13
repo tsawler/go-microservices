@@ -11,6 +11,7 @@ import (
 
 const authServiceURL = "http://authentication-service/authenticate"
 
+// Payload is the type for data we push into RabbitMQ
 type Payload struct {
 	Name string      `json:"name"`
 	Data interface{} `json:"data"`
