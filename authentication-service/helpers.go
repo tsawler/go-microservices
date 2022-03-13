@@ -10,7 +10,7 @@ import (
 type jsonResponse struct {
 	Error   bool        `json:"error"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"` // add this
+	Data    interface{} `json:"data,omitempty"`
 }
 
 // readJSON tries to read the body of a request and converts it into JSON

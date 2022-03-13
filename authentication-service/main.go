@@ -15,10 +15,33 @@ import (
 var conn *sql.DB
 var counts int64
 
+type config struct {
+	DB *sql.DB
+}
+
 func main() {
+
+	connect()
+
+	app := config{
+		DB: conn,
+	}
+
+	srv := &http.Server{
+		Addr:    ":80",
+		Handler: app.routes(),
+	}
+	fmt.Println("Starting authentication end service on port 80")
+	err := srv.ListenAndServe()
+
+	if err != nil {
+		log.Panic(err)
+	}
+}
+
+func connect() {
 	// connect to postgres
 	dsn := "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
-	//dsn := "host=postgres user=postgres password=password dbname=users"
 
 	for {
 		connection, err := openDB(dsn)
@@ -38,32 +61,6 @@ func main() {
 		fmt.Println("Backing off for one second...")
 		time.Sleep(1 * time.Second)
 		continue
-	}
-
-	http.HandleFunc("/authenticate", func(w http.ResponseWriter, r *http.Request) {
-		var requestPayload struct {
-			Email    string `json:"email"`
-			Password string `json:"password"`
-		}
-
-		err := readJSON(w, r, &requestPayload)
-		if err != nil {
-			_ = errorJSON(w, err, http.StatusBadRequest)
-		}
-
-		// TODO validate against database
-		payload := jsonResponse{
-			Error:   false,
-			Message: fmt.Sprintf("Authenticated user %s", requestPayload.Email),
-		}
-
-		_ = writeJSON(w, http.StatusAccepted, payload)
-	})
-
-	fmt.Println("Starting authentication end service on port 80")
-	err := http.ListenAndServe(":80", nil)
-	if err != nil {
-		log.Panic(err)
 	}
 }
 

@@ -6,7 +6,8 @@
             <div class="col">
                 <h1 class="mt-5">Test microservices</h1>
                 <hr>
-                <a id="btn" class="btn btn-outline-secondary" href="javascript:void(0)">Start</a>
+                <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test broker</a>
+                <a id="authBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth</a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     Output shows here...
                 </div>
@@ -17,10 +18,11 @@
 
 {{define "js"}}
     <script>
-        let startBtn = document.getElementById("btn");
+        let brokerBtn = document.getElementById("brokerBtn");
+        let authBtn = document.getElementById("authBtn");
         let output = document.getElementById("output");
 
-        startBtn.addEventListener("click", function() {
+        brokerBtn.addEventListener("click", function() {
             let now = new Date();
             output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
 
@@ -37,6 +39,38 @@
                 .catch((error) =>{
                     output.innerHTML += "<br><br><strong>Error: " + error;
                 })
+        })
+
+        authBtn.addEventListener("click", function() {
+            let now = new Date();
+            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+
+            const payload = {
+                email: "jack@smith.com",
+                password: "verysecret",
+            }
+
+            const headers = new Headers();
+            headers.append("Content-Type", "application/json");
+
+            const body = {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: headers,
+            }
+
+            fetch(`http://localhost:8081/authenticate`, body)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+                } else {
+                    output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
+                }
+            })
+            .catch(error => {
+                alert(error);
+            })
         })
     </script>
 {{end}}
