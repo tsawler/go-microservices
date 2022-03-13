@@ -136,6 +136,7 @@ func rpcPushToLogger(function string, data interface{}) (string, error) {
 }
 
 func authenticate(payload Payload) error {
+	// TODO actually authenticate
 	log.Printf("Got payload of %v", payload)
 	return nil
 }
