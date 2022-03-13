@@ -3,15 +3,21 @@
 From the root level of the project, execute this command:
 
 ~~~
-make docker_build_up
+make up
 ~~~
 
 Then start the front end:
 
 ~~~
-cd front-end
-go run ./cmd/web
+make start
 ~~~
 
 
 Hit the front end with your web browser at `http://locahost:80`
+
+To stop everything:
+
+~~~
+make stop
+make down
+~~~
