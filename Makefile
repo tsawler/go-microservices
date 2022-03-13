@@ -1,12 +1,12 @@
 FRONT_END_BINARY=frontApp
 
-## docker_up_build: Build all projects and start docker compose
+## up: Build all projects and start docker compose
 up:
 	@echo "Starting docker images..."
 	docker-compose up --build -d
 	@echo "Docker started!"
 
-## docker_down: Stop docker compose
+## down: Stop docker compose
 down:
 	@echo "Stopping docker images..."
 	docker-compose down
