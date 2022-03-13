@@ -29,6 +29,7 @@ func main() {
 		}
 
 		if counts > 5 {
+			// if we can't connect in 20 seconds, something is wrong...
 			fmt.Println(err)
 			os.Exit(1)
 		}
