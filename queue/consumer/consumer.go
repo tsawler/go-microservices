@@ -20,7 +20,7 @@ func main() {
 	for {
 		connection, err := amqp.Dial("amqp://guest:guest@rabbitmq")
 		if err != nil {
-			fmt.Println("rabbitmq not ready...")
+			fmt.Println("RabbitMQ not ready...")
 			counts++
 		} else {
 			fmt.Println()
@@ -42,6 +42,7 @@ func main() {
 	defer rabbitConn.Close()
 
 	// start listening for messages
+	log.Println("Listening for RabbitMQ messages...")
 	consumer, err := event.NewConsumer(rabbitConn)
 	if err != nil {
 		panic(err)

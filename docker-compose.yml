@@ -24,6 +24,12 @@ services:
       - "15672:15672"
     restart: always
 
+  log-service:
+    build:
+      context: .
+      dockerfile: ./logservice.dockerfile
+    restart: always
+
   # start etcd
   etcd:
     image: docker.io/bitnami/etcd:3

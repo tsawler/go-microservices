@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/rpc"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -38,7 +39,6 @@ func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 type Payload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
-	Ok   bool   `json:"okay"`
 }
 
 // Listen will listen for all new Queue publications
@@ -95,4 +95,32 @@ func (consumer *Consumer) Listen(topics []string) error {
 
 func handlePayload(payload Payload) {
 	// logic to process payload goes in here
+	switch payload.Name {
+	case "broker_hit":
+		res, err := rpcPush("LogInfo", payload.Data)
+		if err != nil {
+			log.Println(err)
+		}
+		fmt.Println("Response from RPC:", res)
+
+	default:
+
+	}
+}
+
+func rpcPush(function string, data string) (string, error) {
+	c, err := rpc.Dial("tcp", "log-service:5001")
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+
+	fmt.Println("Connected via rpc...")
+	var result string
+	err = c.Call("RPCServer."+function, data, &result)
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }

@@ -10,11 +10,10 @@ import (
 type Payload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
-	Ok   bool   `json:"okay"`
 }
 
 func (app *Config) Home(w http.ResponseWriter, r *http.Request) {
-	err := app.pushToQueue()
+	err := app.pushToQueue("broker_hit", r.RemoteAddr)
 	if err != nil {
 		log.Println(err)
 	}
@@ -30,7 +29,7 @@ func (app *Config) Home(w http.ResponseWriter, r *http.Request) {
 	w.Write(out)
 }
 
-func (app *Config) pushToQueue() error {
+func (app *Config) pushToQueue(name, msg string) error {
 	emitter, err := event.NewEventEmitter(app.Rabbit)
 	if err != nil {
 		log.Println(err)
@@ -38,9 +37,8 @@ func (app *Config) pushToQueue() error {
 	}
 
 	payload := Payload{
-		Name: "my name",
-		Data: "My data",
-		Ok:   false,
+		Name: name,
+		Data: msg,
 	}
 
 	j, _ := json.MarshalIndent(&payload, "", "    ")
