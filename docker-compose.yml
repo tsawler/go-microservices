@@ -2,21 +2,21 @@ version: '3'
 
 services:
 
-  # listener - watches rabbitmq for messages
-  listener:
+  # queue-listener-service - watches rabbitmq for messages
+  queue-listener-service:
     build:
       context: .
-      dockerfile: ./listener.dockerfile
+      dockerfile: ./queue-listener-service.dockerfile
     restart: always
     deploy:
       mode: replicated
       replicas: 1
 
-  # broker - main entry point; we call this from the front end
-  broker:
+  # broker-service - main entry point; we call this from the front end
+  broker-service:
     build:
       context: .
-      dockerfile: ./broker.dockerfile
+      dockerfile: ./broker-service.dockerfile
     ports:
       - "8080:80"
 
@@ -31,10 +31,10 @@ services:
       - ./db-data/rabbitmq/:/var/lib/rabbitmq/
 
   # a service to store logs
-  log-service:
+  logger-service:
     build:
       context: .
-      dockerfile: ./logservice.dockerfile
+      dockerfile: ./logger-service.dockerfile
     restart: always
     volumes:
       - ./logs/:/app/logs

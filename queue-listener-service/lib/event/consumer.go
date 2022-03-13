@@ -109,7 +109,7 @@ func handlePayload(payload Payload) {
 }
 
 func rpcPush(function string, data string) (string, error) {
-	c, err := rpc.Dial("tcp", "log-service:5001")
+	c, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
 		log.Println(err)
 		return "", err
