@@ -11,16 +11,23 @@ import (
 type RPCServer struct{}
 
 type LogEntry struct {
+	Name      string
 	Data      string
 	CreatedAt time.Time
 }
 
-func (r *RPCServer) LogInfo(payload string, resp *string) error {
+type RPCPayload struct {
+	Name string
+	Data string
+}
+
+func (r *RPCServer) LogInfo(payload RPCPayload, resp *string) error {
 	infoLog.Println("Processed payload:", payload)
 
 	collection := client.Database("logs").Collection("logs")
 	_, err := collection.InsertOne(context.TODO(), LogEntry{
-		Data:      payload,
+		Name:      payload.Name,
+		Data:      payload.Data,
 		CreatedAt: time.Now(),
 	})
 	if err != nil {
@@ -28,6 +35,6 @@ func (r *RPCServer) LogInfo(payload string, resp *string) error {
 		return err
 	}
 
-	*resp = "Processed payload: " + payload
+	*resp = "Processed payload: " + payload.Name
 	return nil
 }

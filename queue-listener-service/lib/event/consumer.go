@@ -63,7 +63,6 @@ func (consumer *Consumer) Listen(topics []string) error {
 			false,
 			nil,
 		)
-		fmt.Println("Exchange name:", getExchangeName())
 
 		if err != nil {
 			log.Println(err)
@@ -79,10 +78,8 @@ func (consumer *Consumer) Listen(topics []string) error {
 	forever := make(chan bool)
 	go func() {
 		for d := range messages {
-			log.Printf("Received a message: %s", d.Body)
 			var payload Payload
 			_ = json.Unmarshal(d.Body, &payload)
-			log.Println("Got value from json:", payload.Name)
 			// Do something with the payload
 			go handlePayload(payload)
 		}
@@ -97,7 +94,7 @@ func handlePayload(payload Payload) {
 	// logic to process payload goes in here
 	switch payload.Name {
 	case "broker_hit":
-		res, err := rpcPush("LogInfo", payload.Data)
+		res, err := rpcPush("LogInfo", payload)
 		if err != nil {
 			log.Println(err)
 		}
@@ -108,7 +105,7 @@ func handlePayload(payload Payload) {
 	}
 }
 
-func rpcPush(function string, data string) (string, error) {
+func rpcPush(function string, data interface{}) (string, error) {
 	c, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
 		log.Println(err)
