@@ -2,3 +2,4 @@
 coverage.out
 db-data/*
 frontApp
+logs/*

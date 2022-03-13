@@ -29,6 +29,8 @@ services:
       context: .
       dockerfile: ./logservice.dockerfile
     restart: always
+    volumes:
+      - ./logs/:/app/logs
 
   # start etcd
   etcd:
