@@ -20,6 +20,11 @@ stop:
 	@-pkill -SIGTERM -f "./frontApp"
 	@echo "Stopped front end!"
 
+restart_auth:
+	@echo "Stopping authentication service"
+	docker-compose build authentication-service && docker-compose restart authentication-service
+	@echo "Restarted!"
+
 test:
 	@echo "Testing..."
 	go test -v ./...

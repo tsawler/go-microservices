@@ -12,6 +12,18 @@ services:
       mode: replicated
       replicas: 1
 
+  # authentication-service - handles user auth
+  authentication-service:
+    build:
+      context: .
+      dockerfile: ./authentication-service.dockerfile
+    restart: always
+    ports:
+      - "8081:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+
   # broker-service - main entry point; we call this from the front end
   broker-service:
     build:
@@ -69,4 +81,17 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - ./db-data/mongo/:/data/db
+
+  #  start Postgres, and ensure that data is stored to a mounted volume
+  postgres:
+    image: 'postgres:14.0'
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
 
