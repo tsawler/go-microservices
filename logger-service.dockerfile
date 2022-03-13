@@ -5,7 +5,7 @@ FROM golang:1.17-alpine
 RUN mkdir /app
 
 # Copy all files from the current directory to the app directory
-COPY ./log-service/. /app
+COPY logger-service/. /app
 
 # Set working directory
 WORKDIR /app
