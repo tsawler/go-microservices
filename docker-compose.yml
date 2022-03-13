@@ -24,6 +24,16 @@ services:
       mode: replicated
       replicas: 1
 
+  # mail-service - handles sending mail
+  mail-service:
+    build:
+      context: .
+      dockerfile: ./mail-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+
   # broker-service - main entry point; we call this from the front end
   broker-service:
     build:
