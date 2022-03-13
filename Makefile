@@ -1,3 +1,5 @@
+FRONT_END_BINARY=frontApp
+
 ## docker_up_build: Build all projects and start docker compose
 up:
 	@echo "Starting docker images..."
@@ -13,8 +15,8 @@ down:
 ## start: starts the front end
 start:
 	@echo "Starting front end"
-	cd front-end && go build -o frontApp ./cmd/web
-	cd front-end && ./frontApp &
+	cd front-end && go build -o ${FRONT_END_BINARY} ./cmd/web
+	cd front-end && ./${FRONT_END_BINARY} &
 
 ## stop: stop the front end
 stop:
@@ -50,6 +52,16 @@ restart_logger:
 test:
 	@echo "Testing..."
 	go test -v ./...
+
+## clean: runs go clean and deletes binaries
+clean:
+	@echo "Cleaning..."
+	@cd authentication-service && go clean
+	@cd front-end && go clean
+	@cd front-end && rm ${FRONT_END_BINARY}
+	@cd logger-service && go clean
+	@cd queue-listener-service && go clean
+	@echo "Cleaned!"
 
 ## help: displays help
 help: Makefile
