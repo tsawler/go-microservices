@@ -45,8 +45,8 @@ All make commands:
 ~~~
 tcs@Grendel go-microservices % make help
  Choose a command:
-  up                 Build all projects and start docker compose
-  down               Stop docker compose
+  up                 build all projects and start docker compose
+  down               stop docker compose
   start              starts the front end
   stop               stop the front end
   restart_broker     rebuilds and restarts broker-service
