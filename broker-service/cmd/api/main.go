@@ -13,7 +13,6 @@ type Config struct {
 }
 
 func main() {
-
 	var rabbitConn *amqp.Connection
 	var counts int64
 
