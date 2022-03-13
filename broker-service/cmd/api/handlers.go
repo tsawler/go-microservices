@@ -38,11 +38,7 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	_ = readJSON(w, r, &requestPayload)
 
-	var payload struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
-	}
-	jsonData, _ := json.MarshalIndent(payload, "", "\t")
+	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
 
 	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
@@ -60,9 +56,21 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//var authPayload
+	// variable we'll read the response.Body into
+	var jsonFromService jsonResponse
 
+	// decode the json we get from the auth service into our variable
+	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
+	if err != nil {
+		_ = errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// send json back to our end user
+	var payload jsonResponse
+	payload.Error = false
 	payload.Message = "Authenticated!"
+	payload.Data = jsonFromService.Data
 
 	out, _ := json.MarshalIndent(payload, "", "\t")
 	w.Header().Set("Content-Type", "application/json")
