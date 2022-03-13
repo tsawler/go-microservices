@@ -12,8 +12,8 @@ import (
 const authServiceURL = "http://authentication-service/authenticate"
 
 type Payload struct {
-	Name string `json:"name"`
-	Data string `json:"data"`
+	Name string      `json:"name"`
+	Data interface{} `json:"data"`
 }
 
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
