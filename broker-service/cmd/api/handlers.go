@@ -16,15 +16,14 @@ type Payload struct {
 	Data interface{} `json:"data"`
 }
 
+// Broker is a simple test handler for the broker
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	err := app.pushToQueue("broker_hit", r.RemoteAddr)
 	if err != nil {
 		log.Println(err)
 	}
-	var payload struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
-	}
+
+	var payload jsonResponse
 	payload.Message = "Received request"
 
 	out, _ := json.MarshalIndent(payload, "", "\t")
@@ -33,6 +32,9 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(out)
 }
 
+// BrokerAuth is the handler to authenticate using the authentication-service.
+// We receive user credentials as JSON, and then post that JSON to the authentication-service
+// to try to authenticate.
 func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	// create a variable matching the structure of the JSON we expect from the front end
 	var requestPayload struct {
