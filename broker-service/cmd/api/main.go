@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"math"
 	"net/http"
 	"os"
 	"time"
@@ -17,7 +16,6 @@ func main() {
 
 	var rabbitConn *amqp.Connection
 	var counts int64
-	var backOff = 1 * time.Second
 
 	// don't continue until rabbitmq is ready
 	for {
@@ -31,13 +29,12 @@ func main() {
 			break
 		}
 
-		if counts > 5 {
+		if counts > 15 {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Printf("Backing off for %d seconds...\n", int(math.Pow(float64(counts), 2)))
-		backOff = time.Duration(math.Pow(float64(counts), 2)) * time.Second
-		time.Sleep(backOff)
+		fmt.Println("Backing off for 2 seconds...")
+		time.Sleep(2 * time.Second)
 		continue
 	}
 
