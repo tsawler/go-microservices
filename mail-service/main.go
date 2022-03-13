@@ -15,8 +15,6 @@ func main() {
 		Mailer: createMail(),
 	}
 
-	go app.Mailer.ListenForMail()
-
 	srv := &http.Server{
 		Addr:    ":80",
 		Handler: app.routes(),
@@ -38,11 +36,6 @@ func createMail() Mail {
 		Encryption:  "none",
 		FromName:    "John Smith",
 		FromAddress: "john.smith@example.com",
-		Jobs:        make(chan Message, 5),
-		Results:     make(chan Result, 5),
-		API:         "",
-		APIKey:      "",
-		APIUrl:      "",
 	}
 
 	return s
