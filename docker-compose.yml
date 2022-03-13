@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  # listener
+  # listener - watches rabbitmq for messages
   listener:
     build:
       context: .
@@ -12,6 +12,7 @@ services:
       mode: replicated
       replicas: 2
 
+  # broker - main entry point; we call this from the front end
   broker:
     build:
       context: .
@@ -19,7 +20,7 @@ services:
     ports:
       - "8080:80"
 
-  # start rabbitmq
+  # rabbitmq: the rabbitmq server
   rabbitmq:
     image: 'rabbitmq:3-management'
     ports:
@@ -27,6 +28,7 @@ services:
       - "15672:15672"
     restart: always
 
+  # a service to store logs
   log-service:
     build:
       context: .
@@ -35,7 +37,7 @@ services:
     volumes:
       - ./logs/:/app/logs
 
-  # start etcd
+  # etcd: start etcd server
   etcd:
     image: docker.io/bitnami/etcd:3
     ports:
@@ -45,7 +47,7 @@ services:
     volumes:
       - ./db-data/etcd/:/bitnami/etcd
 
-  #  start mailhog
+  #  mailhog: a fake smtp server with a web interface
   mailhog:
     image: 'mailhog/mailhog:latest'
     ports:
