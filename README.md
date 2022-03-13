@@ -5,8 +5,9 @@ consists of a number of loosely coupled microservices, all written in Go:
 
 - authentication-service: authenticates users against a Postgres database (accepts JSON)
 - logger-service: logs important events to a MongoDB database (accepts RPC)
-- broker-service: an optional single entry point to connect to all services from one place
-- queue-listener-service: consumes messages from ampq (RabbitMQ) and initiates actions based on payload
+- broker-service: an optional single entry point to connect to all services from one place (accepts JSON)
+- queue-listener-service: consumes messages from amqp (RabbitMQ) and initiates actions based on payload
+- mail-service: sends email (accepts JSON)
 
 In addition to those services, the included `docker-compose.yml` at the root level of the project
 starts the following services:
