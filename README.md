@@ -31,7 +31,7 @@ make start
 ~~~
 
 
-Hit the front end with your web browser at `http://locahost:80`
+Hit the front end with your web browser at `http://localhost:80`
 
 To stop everything:
 
