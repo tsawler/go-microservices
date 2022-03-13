@@ -21,3 +21,21 @@ To stop everything:
 make stop
 make down
 ~~~
+
+All make commands:
+
+~~~
+tcs@Grendel go-microservices % make help
+ Choose a command:
+  docker_up_build    Build all projects and start docker compose
+  docker_down        Stop docker compose
+  start              starts the front end
+  stop               stop the front end
+  restart_broker     rebuilds and restarts broker-service
+  restart_auth       rebuilds and restarts authentication-service
+  restart_listener   rebuilds and restarts queue-listener-service
+  restart_logger     rebuilds and restarts logger-service
+  test               runs all tests
+  clean              runs go clean and deletes binaries
+  help               displays help
+~~~
