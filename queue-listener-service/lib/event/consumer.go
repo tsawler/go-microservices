@@ -42,7 +42,6 @@ type Payload struct {
 }
 
 // Listen will listen for all new Queue publications
-// and print them to the console.
 func (consumer *Consumer) Listen(topics []string) error {
 	ch, err := consumer.conn.Channel()
 	if err != nil {
@@ -78,8 +77,10 @@ func (consumer *Consumer) Listen(topics []string) error {
 	forever := make(chan bool)
 	go func() {
 		for d := range messages {
+			// get the JSON payload and unmarshal it into a variable
 			var payload Payload
 			_ = json.Unmarshal(d.Body, &payload)
+
 			// Do something with the payload
 			go handlePayload(payload)
 		}
@@ -94,18 +95,18 @@ func handlePayload(payload Payload) {
 	// logic to process payload goes in here
 	switch payload.Name {
 	case "broker_hit":
-		res, err := rpcPush("LogInfo", payload)
+		res, err := rpcPushToLogger("LogInfo", payload)
 		if err != nil {
 			log.Println(err)
 		}
 		fmt.Println("Response from RPC:", res)
 
 	default:
-
+		// nothing to do
 	}
 }
 
-func rpcPush(function string, data interface{}) (string, error) {
+func rpcPushToLogger(function string, data interface{}) (string, error) {
 	c, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
 		log.Println(err)
