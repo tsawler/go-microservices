@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -76,6 +77,16 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 		_ = errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
+
+	if jsonFromService.Error {
+		// invalid login
+		_ = errorJSON(w, err, http.StatusUnauthorized)
+		_ = app.pushToQueue("authentication", fmt.Sprintf("invalid login for %s", requestPayload.Email))
+		return
+	}
+
+	// log action
+	_ = app.pushToQueue("authentication", fmt.Sprintf("valid login for %s", requestPayload.Email))
 
 	// send json back to our end user
 	var payload jsonResponse
