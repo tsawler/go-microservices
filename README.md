@@ -1,5 +1,22 @@
 # Working with Microservices in Go
 
+This is the source code for the Udemy course **Working with Microservices and Go**. This project
+consists of a number of loosely coupled microservices, all written in Go:
+
+- authentication-service: authenticates users against a Postgres database (accepts JSON)
+- logger-service: logs important events to a MongoDB database (accepts RPC)
+- broker-service: an optional single entry point to connect to all services from one place
+- queue-listener-service: consumes messages from ampq (RabbitMQ) and initiates actions based on payload
+
+In addition to those services, the included `docker-compose.yml` at the root level of the project
+starts the following services:
+
+- Postgresql 14
+- etcd
+- mailhog
+- MongoDB
+
+## Running the project
 From the root level of the project, execute this command:
 
 ~~~
