@@ -8,6 +8,9 @@ services:
       context: .
       dockerfile: ./listener.dockerfile
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 2
 
   broker:
     build:
