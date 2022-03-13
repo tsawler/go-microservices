@@ -48,6 +48,12 @@ restart_logger:
 	docker-compose build logger-service && docker-compose up -d
 	@echo "Restarted!"
 
+## restart_mail: rebuilds and restarts mail-service
+restart_mail:
+	@echo "Stopping mail service"
+	docker-compose build mail-service && docker-compose up -d
+	@echo "Restarted!"
+
 ## test: runs all tests
 test:
 	@echo "Testing..."

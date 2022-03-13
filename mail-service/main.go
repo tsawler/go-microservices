@@ -31,7 +31,6 @@ func main() {
 func createMail() Mail {
 	s := Mail{
 		Domain:      "localhost",
-		Templates:   "./templates",
 		Host:        "mailhog",
 		Port:        1025,
 		Username:    "",

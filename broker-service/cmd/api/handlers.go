@@ -11,6 +11,7 @@ import (
 )
 
 const authServiceURL = "http://authentication-service/authenticate"
+const mailServiceURL = "http://mail-service/send"
 
 // Payload is the type for data we push into RabbitMQ
 type Payload struct {
@@ -98,6 +99,51 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	_, _ = w.Write(out)
+}
+
+func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
+	var msg struct {
+		From    string `json:"from"`
+		To      string `json:"to"`
+		Subject string `json:"subject"`
+		Message string `json:"message"`
+	}
+
+	msg.From = "me@here.com"
+	msg.To = "you@there.com"
+	msg.Subject = "My Subject"
+	msg.Message = "Hello, world!"
+
+	jsonData, _ := json.MarshalIndent(msg, "", "\t")
+
+	// call the mail-service
+	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		_ = errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	defer response.Body.Close()
+
+	// make sure we get back the right status code
+	if response.StatusCode != http.StatusAccepted {
+		_ = errorJSON(w, errors.New("error calling mail service"), http.StatusBadRequest)
+		return
+	}
+
+	// send json back to our end user
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Message sent to " + msg.To
+
+	out, _ := json.MarshalIndent(payload, "", "\t")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	_, _ = w.Write(out)
+
 }
 
 // pushToQueue pushes a message into RabbitMQ

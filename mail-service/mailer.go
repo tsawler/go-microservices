@@ -16,7 +16,6 @@ import (
 // Mail holds the information necessary to connect to an SMTP server
 type Mail struct {
 	Domain      string
-	Templates   string
 	Host        string
 	Port        int
 	Username    string
@@ -37,9 +36,9 @@ type Message struct {
 	FromName    string
 	To          string
 	Subject     string
-	Template    string
 	Attachments []string
 	Data        interface{}
+	DataMap     map[string]interface{}
 }
 
 // Result contains information regarding the status of the sent email message
@@ -172,6 +171,11 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 		msg.FromName = m.FromName
 	}
 
+	data := map[string]interface{}{
+		"message": msg.Data,
+	}
+	msg.DataMap = data
+
 	formattedMessage, err := m.buildHTMLMessage(msg)
 	if err != nil {
 		return err
@@ -202,8 +206,8 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 		AddTo(msg.To).
 		SetSubject(msg.Subject)
 
-	email.SetBody(mail.TextHTML, formattedMessage)
-	email.AddAlternative(mail.TextPlain, plainMessage)
+	email.SetBody(mail.TextPlain, plainMessage)
+	email.AddAlternative(mail.TextHTML, formattedMessage)
 
 	// add attachments, if any
 	if len(msg.Attachments) > 0 {
@@ -222,7 +226,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 
 // buildHTMLMessage creates the html version of the message
 func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
-	templateToRender := fmt.Sprintf("%s/%s.html.tmpl", m.Templates, msg.Template)
+	templateToRender := "./templates/mail.html.tmpl"
 
 	t, err := template.New("email-html").ParseFiles(templateToRender)
 	if err != nil {
@@ -230,7 +234,7 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 	}
 
 	var tpl bytes.Buffer
-	if err = t.ExecuteTemplate(&tpl, "body", msg.Data); err != nil {
+	if err = t.ExecuteTemplate(&tpl, "body", msg.DataMap); err != nil {
 		return "", err
 	}
 
@@ -244,14 +248,14 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 
 // buildPlainTextMessage creates the plaintext version of the message
 func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
-	templateToRender := fmt.Sprintf("%s/%s.plain.tmpl", m.Templates, msg.Template)
+	templateToRender := "./templates/mail.plain.tmpl"
 	t, err := template.New("email-plain").ParseFiles(templateToRender)
 	if err != nil {
 		return "", err
 	}
 
 	var tplPlain bytes.Buffer
-	if err = t.ExecuteTemplate(&tplPlain, "body", msg.Data); err != nil {
+	if err = t.ExecuteTemplate(&tplPlain, "body", msg.DataMap); err != nil {
 		return "", err
 	}
 

@@ -9,6 +9,7 @@
                 <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test broker</a>
                 <a id="authBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth</a>
                 <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth via broker</a>
+                <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Send email</a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     Output shows here...
                 </div>
@@ -23,6 +24,7 @@
         let authBrokerBtn = document.getElementById("authBrokerBtn");
         let authBtn = document.getElementById("authBtn");
         let output = document.getElementById("output");
+        let mailBtn = document.getElementById("mailBtn");
 
         brokerBtn.addEventListener("click", function() {
             let now = new Date();
@@ -40,6 +42,30 @@
                         console.log(data.error)
                     } else {
                         output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+                    }
+                })
+                .catch((error) =>{
+                    output.innerHTML += "<br><br><strong>Error: " + error;
+                })
+        })
+
+        mailBtn.addEventListener("click", function() {
+            let now = new Date();
+            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+
+            const body = {
+                method: 'POST',
+            }
+
+            // send request to main entrypoint for microservices
+            fetch("http://localhost:8080/mail", body)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        console.log(data.error)
+                        output.innerHTML += "<br><br><strong>Error: " + data.message;
+                    } else {
+                        output.innerHTML += `<br><strong>Response from mail service</strong>: ${data.message}`;
                     }
                 })
                 .catch((error) =>{
