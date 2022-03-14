@@ -45,8 +45,7 @@
         let received = document.getElementById("received")
 
         brokerBtn.addEventListener("click", function() {
-            let now = new Date();
-            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+            started();
 
             const body = {
                 method: 'POST',
@@ -63,6 +62,7 @@
                     } else {
                         output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
                     }
+                    ended();
                 })
                 .catch((error) =>{
                     output.innerHTML += "<br><br><strong>Error: " + error;
@@ -70,8 +70,8 @@
         })
 
         mailBtn.addEventListener("click", function() {
-            let now = new Date();
-            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+            started();
+
             const payload = {
                 from: "me@here.com",
                 to: "you@there.com",
@@ -100,6 +100,7 @@
                     } else {
                         output.innerHTML += `<br><strong>Response from mail service</strong>: ${data.message}`;
                     }
+                    ended();
                 })
                 .catch((error) =>{
                     output.innerHTML += "<br><br><strong>Error: " + error;
@@ -107,8 +108,7 @@
         })
 
         authBtn.addEventListener("click", function() {
-            let now = new Date();
-            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+            started();
 
             const payload = {
                 email: "trevor.sawler@gmail.com",
@@ -135,6 +135,7 @@
                 } else {
                     output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
                 }
+                ended();
             })
             .catch(error => {
                 output.innerHTML += "<br><br><strong>Error: " + error;
@@ -142,8 +143,7 @@
         })
 
         authBrokerBtn.addEventListener("click", function() {
-            let now = new Date();
-            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending request...</em>`;
+            started();
 
             const payload = {
                 email: "trevor.sawler@gmail.com",
@@ -170,6 +170,7 @@
                         output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
                         output.innerHTML += `<br>Authenticated user ${data.data.first_name}`;
                     }
+                    ended();
                 })
                 .catch(error => {
                     output.innerHTML += "<br><br><strong>Error: " + error;
@@ -177,8 +178,7 @@
         })
 
         logBtn.addEventListener("click", function() {
-            let now = new Date();
-            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending log request...</em>`;
+            started();
 
             const payload = {
                 name: "event",
@@ -204,10 +204,22 @@
                     } else {
                         output.innerHTML += `<br><strong>Response from log service:</strong> ${data.message}`;
                     }
+                    ended();
                 })
                 .catch(error => {
                     output.innerHTML += "<br><br><strong>Error: " + error;
                 })
         })
+
+        function ended() {
+            let now = new Date();
+            output.innerHTML += `<br><strong class="text-danger">Ended:</strong> ${now}...<br>`;
+        }
+
+        function started() {
+            let now = new Date();
+            output.innerHTML = `<strong class="text-success">Started:</strong> ${now}...<br><em>Sending request...</em>`;
+        }
+
     </script>
 {{end}}
