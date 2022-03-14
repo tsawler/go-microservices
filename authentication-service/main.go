@@ -21,7 +21,7 @@ type config struct {
 
 func main() {
 
-	connect()
+	connectToDB()
 
 	app := config{
 		DB: conn,
@@ -39,7 +39,7 @@ func main() {
 	}
 }
 
-func connect() {
+func connectToDB() {
 	// connect to postgres
 	dsn := os.Getenv("DSN")
 

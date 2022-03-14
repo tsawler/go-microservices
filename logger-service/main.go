@@ -27,7 +27,7 @@ func main() {
 	infoLog = log.New(infoLogFile, "INFO\t", log.Ldate|log.Ltime)
 
 	// connect to mongo
-	mongoClient, err := connect()
+	mongoClient, err := connectToMongo()
 	client = mongoClient
 
 	// we'll use this context to disconnect from mongo, since it needs one
@@ -67,7 +67,7 @@ func main() {
 }
 
 // connect opens a connection to mongo
-func connect() (*mongo.Client, error) {
+func connectToMongo() (*mongo.Client, error) {
 	// create connect options
 	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
 	clientOptions.SetAuth(options.Credential{
