@@ -16,7 +16,7 @@ import (
 var conn *sql.DB
 var counts int64
 
-type config struct {
+type Config struct {
 	DB     *sql.DB
 	Models data.Models
 }
@@ -25,7 +25,7 @@ func main() {
 
 	connectToDB()
 
-	app := config{
+	app := Config{
 		DB:     conn,
 		Models: data.New(conn),
 	}

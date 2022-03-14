@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net"
+	"net/http"
 	"net/rpc"
 	"os"
 	"time"
@@ -14,6 +15,10 @@ import (
 
 var infoLog *log.Logger
 var client *mongo.Client
+
+type Config struct {
+	Mongo *mongo.Client
+}
 
 func main() {
 	// create a log file we can write to
@@ -39,6 +44,9 @@ func main() {
 		}
 	}()
 
+	// start webserver in its own GoRoutine
+	go serve(client)
+
 	log.Println("Starting RPC Server on port 5001")
 
 	// register the RPC server
@@ -63,6 +71,23 @@ func main() {
 		}
 		log.Println("Working...")
 		go rpc.ServeConn(rpcConn)
+	}
+}
+
+func serve(mongo *mongo.Client) {
+	app := Config{
+		Mongo: mongo,
+	}
+
+	srv := &http.Server{
+		Addr:    ":80",
+		Handler: app.routes(),
+	}
+
+	fmt.Println("Starting logging web service on port 80")
+	err := srv.ListenAndServe()
+	if err != nil {
+		log.Panic(err)
 	}
 }
 

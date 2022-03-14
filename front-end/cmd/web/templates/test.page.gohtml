@@ -10,6 +10,7 @@
                 <a id="authBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth</a>
                 <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth via broker</a>
                 <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Send email</a>
+                <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Write to log</a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     Output shows here...
                 </div>
@@ -25,6 +26,7 @@
         let authBtn = document.getElementById("authBtn");
         let output = document.getElementById("output");
         let mailBtn = document.getElementById("mailBtn");
+        let logBtn = document.getElementById("logBtn");
 
         brokerBtn.addEventListener("click", function() {
             let now = new Date();
@@ -131,6 +133,38 @@
                     } else {
                         output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
                         output.innerHTML += `<br>Authenticated user ${data.data.first_name}`;
+                    }
+                })
+                .catch(error => {
+                    output.innerHTML += "<br><br><strong>Error: " + error;
+                })
+        })
+
+        logBtn.addEventListener("click", function() {
+            let now = new Date();
+            output.innerHTML = `<strong>Started:</strong> ${now}...<br><em>Sending log request...</em>`;
+
+            const payload = {
+                name: "event",
+                data: "Some kind of data",
+            }
+
+            const headers = new Headers();
+            headers.append("Content-Type", "application/json");
+
+            const body = {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: headers,
+            }
+
+            fetch(`http://localhost:8082/log`, body)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+                    } else {
+                        output.innerHTML += `<br><strong>Response from log service:</strong> ${data.message}`;
                     }
                 })
                 .catch(error => {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (app *config) Authenticate(w http.ResponseWriter, r *http.Request) {
+func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -30,6 +30,7 @@ func (app *config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		_ = errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
+
 	payload := jsonResponse{
 		Error:   false,
 		Message: fmt.Sprintf("Logged in user %s", requestPayload.Email),
