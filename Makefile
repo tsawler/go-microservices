@@ -1,10 +1,16 @@
 FRONT_END_BINARY=frontApp
 
-## up: build all projects and start docker compose
+## up: starts all containers in the background without forcing build
 up:
 	@echo "Starting docker images..."
+	docker-compose up -docker
+	@echo "Docker images started!"
+
+## up_build: build all projects and start docker compose
+up_build:
+	@echo "Building (when required) and starting docker images..."
 	docker-compose up --build -d
-	@echo "Docker started!"
+	@echo "Docker images built and started!"
 
 ## down: stop docker compose
 down:
