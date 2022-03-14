@@ -52,7 +52,7 @@
             }
 
             // send request to main entrypoint for microservices
-            fetch(`http://localhost:8080`, body)
+            fetch("http:\/\/localhost:8080", body)
                 .then((response) => response.json())
                 .then((data) => {
                     sent.innerHTML = "empty post request";
@@ -89,7 +89,7 @@
             }
 
             // send request to main entrypoint for microservices
-            fetch(`http://localhost:8080/mail`, body)
+            fetch("http:\/\/localhost:8080/mail", body)
                 .then((response) => response.json())
                 .then((data) => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);
@@ -124,7 +124,7 @@
                 headers: headers,
             }
 
-            fetch(`http://localhost:8081/authenticate`, body)
+            fetch("http:\/\/localhost:8081/authenticate", body)
             .then(response => response.json())
             .then(data => {
                 sent.innerHTML = JSON.stringify(payload, undefined, 4);
@@ -159,7 +159,7 @@
                 headers: headers,
             }
 
-            fetch(`http://localhost:8080/authenticate`, body)
+            fetch("http:\/\/localhost:8080/authenticate", body)
                 .then(response => response.json())
                 .then(data => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);
