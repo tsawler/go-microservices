@@ -52,7 +52,7 @@
             }
 
             // send request to main entrypoint for microservices
-            fetch("http://localhost:8080", body)
+            fetch(`http://localhost:8080`, body)
                 .then((response) => response.json())
                 .then((data) => {
                     sent.innerHTML = "empty post request";
