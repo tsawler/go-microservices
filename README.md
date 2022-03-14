@@ -57,5 +57,4 @@ tcs@Grendel go-microservices % make help
   test               runs all tests
   clean              runs go clean and deletes binaries
   help               displays help
-
 ~~~
