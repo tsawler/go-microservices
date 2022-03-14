@@ -2,6 +2,17 @@ version: '3'
 
 services:
 
+  # broker-service - main entry point; we call this from the front end
+  broker-service:
+    build:
+      context: .
+      dockerfile: ./broker-service.dockerfile
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+
   # queue-listener-service - watches rabbitmq for messages
   queue-listener-service:
     build:
@@ -34,14 +45,6 @@ services:
       mode: replicated
       replicas: 1
 
-  # broker-service - main entry point; we call this from the front end
-  broker-service:
-    build:
-      context: .
-      dockerfile: ./broker-service.dockerfile
-    ports:
-      - "8080:80"
-
   # rabbitmq: the rabbitmq server
   rabbitmq:
     image: 'rabbitmq:3-management'
@@ -49,15 +52,21 @@ services:
       - "5672:5672"
       - "15672:15672"
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - ./db-data/rabbitmq/:/var/lib/rabbitmq/
 
-  # a service to store logs
+  # logger-service: a service to store logs
   logger-service:
     build:
       context: .
       dockerfile: ./logger-service.dockerfile
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - ./logs/:/app/logs
 
@@ -68,23 +77,32 @@ services:
       - "2379:2379"
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - ./db-data/etcd/:/bitnami/etcd
 
-  #  mailhog: a fake smtp server with a web interface
+  # mailhog: a fake smtp server with a web interface
   mailhog:
     image: 'mailhog/mailhog:latest'
     ports:
       - "1025:1025"
       - "8025:8025"
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
 
-  #  start mongo, and ensure that data is stored to a mounted volume
+  # mongo: start MongoDB and ensure that data is stored to a mounted volume
   mongo:
     image: 'mongo:4.2.17-bionic'
     ports:
       - "27017:27017"
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     environment:
       MONGO_INITDB_DATABASE: logs
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -92,12 +110,15 @@ services:
     volumes:
       - ./db-data/mongo/:/data/db
 
-  #  start Postgres, and ensure that data is stored to a mounted volume
+  # postgres: start Postgres, and ensure that data is stored to a mounted volume
   postgres:
     image: 'postgres:14.0'
     ports:
       - "5432:5432"
     restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
