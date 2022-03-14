@@ -104,18 +104,16 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(out)
 }
 
-func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
-	var msg struct {
-		From    string `json:"from"`
-		To      string `json:"to"`
-		Subject string `json:"subject"`
-		Message string `json:"message"`
-	}
+type MailMessagePayload struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
 
-	msg.From = "me@here.com"
-	msg.To = "you@there.com"
-	msg.Subject = "My Subject"
-	msg.Message = "Hello, world!"
+func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
+	var msg MailMessagePayload
+	_ = readJSON(w, r, &msg)
 
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
