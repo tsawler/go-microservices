@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (app *config) routes() http.Handler {
+func (app *Config) routes() http.Handler {
 	mux := chi.NewRouter()
 
 	// specify who is allowed to connect to our API service
