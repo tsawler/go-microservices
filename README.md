@@ -53,7 +53,9 @@ tcs@Grendel go-microservices % make help
   restart_auth       rebuilds and restarts authentication-service
   restart_listener   rebuilds and restarts queue-listener-service
   restart_logger     rebuilds and restarts logger-service
+  restart_mail       rebuilds and restarts mail-service
   test               runs all tests
   clean              runs go clean and deletes binaries
   help               displays help
+
 ~~~
