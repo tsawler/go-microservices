@@ -18,8 +18,9 @@ starts the following services:
 - MongoDB
 
 ## Running the project
-From the root level of the project, execute this command (this assumes that you have a recent version
-of Docker installed on your machine):
+From the root level of the project, execute this command (this assumes that you have 
+[GNU make](https://www.gnu.org/software/make/) and a recent version
+of [Docker](https://www.docker.com/products/docker-desktop) installed on your machine):
 
 ~~~
 make up
