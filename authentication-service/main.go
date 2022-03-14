@@ -41,7 +41,7 @@ func main() {
 
 func connect() {
 	// connect to postgres
-	dsn := "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+	dsn := os.Getenv("DSN")
 
 	for {
 		connection, err := openDB(dsn)

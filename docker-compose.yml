@@ -34,6 +34,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
 
   # mail-service - handles sending mail
   mail-service:
