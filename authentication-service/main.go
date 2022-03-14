@@ -1,6 +1,7 @@
 package main
 
 import (
+	"authentication/data"
 	"database/sql"
 	"fmt"
 	_ "github.com/jackc/pgconn"
@@ -16,7 +17,8 @@ var conn *sql.DB
 var counts int64
 
 type config struct {
-	DB *sql.DB
+	DB     *sql.DB
+	Models data.Models
 }
 
 func main() {
@@ -24,7 +26,8 @@ func main() {
 	connectToDB()
 
 	app := config{
-		DB: conn,
+		DB:     conn,
+		Models: data.New(conn),
 	}
 
 	srv := &http.Server{

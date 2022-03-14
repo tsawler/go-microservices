@@ -64,7 +64,10 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	// make sure we get back the right status code
-	if response.StatusCode != http.StatusAccepted {
+	if response.StatusCode == http.StatusUnauthorized {
+		_ = errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
+		return
+	} else if response.StatusCode != http.StatusAccepted {
 		_ = errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
 		return
 	}
