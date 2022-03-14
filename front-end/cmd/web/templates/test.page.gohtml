@@ -16,6 +16,20 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <h4 class="mt-5">Sent</h4>
+                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                    <pre id="payload"></pre>
+                </div>
+            </div>
+            <div class="col">
+                <h4 class="mt-5">Received</h4>
+                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                    <pre id="received"></pre>
+                </div>
+            </div>
+        </div>
     </div>
 {{end}}
 
@@ -27,6 +41,8 @@
         let output = document.getElementById("output");
         let mailBtn = document.getElementById("mailBtn");
         let logBtn = document.getElementById("logBtn");
+        let sent = document.getElementById("payload")
+        let received = document.getElementById("received")
 
         brokerBtn.addEventListener("click", function() {
             let now = new Date();
@@ -40,6 +56,8 @@
             fetch("http://localhost:8080", body)
                 .then((response) => response.json())
                 .then((data) => {
+                    sent.innerHTML = "empty post request";
+                    received.innerHTML = JSON.stringify(data, undefined, 4);
                     if (data.error) {
                         console.log(data.error)
                     } else {
@@ -63,6 +81,8 @@
             fetch("http://localhost:8080/mail", body)
                 .then((response) => response.json())
                 .then((data) => {
+                    sent.innerHTML = "empty post request";
+                    received.innerHTML = JSON.stringify(data, undefined, 4);
                     if (data.error) {
                         console.log(data.error)
                         output.innerHTML += "<br><br><strong>Error: " + data.message;
@@ -96,8 +116,11 @@
             fetch(`http://localhost:8081/authenticate`, body)
             .then(response => response.json())
             .then(data => {
+                sent.innerHTML = JSON.stringify(payload, undefined, 4);
+                received.innerHTML = JSON.stringify(data, undefined, 4);
                 if (data.error) {
                     output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+
                 } else {
                     output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
                 }
@@ -128,6 +151,8 @@
             fetch(`http://localhost:8080/authenticate`, body)
                 .then(response => response.json())
                 .then(data => {
+                    sent.innerHTML = JSON.stringify(payload, undefined, 4);
+                    received.innerHTML = JSON.stringify(data, undefined, 4);
                     if (data.error) {
                         output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
                     } else {
