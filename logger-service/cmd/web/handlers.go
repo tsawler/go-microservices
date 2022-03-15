@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -132,11 +131,13 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	opts := options.Find()
 	cursor, err := collection.Find(context.TODO(), bson.D{}, opts)
 	if err != nil {
-		fmt.Println("Finding all documents ERROR:", err)
+		log.Println("Finding all documents ERROR:", err)
+		app.clientError(w, http.StatusBadRequest)
+		return
 	}
 	defer cursor.Close(ctx)
 
-	log.Println("Got cursor")
+	var logs []Logs
 
 	for cursor.Next(ctx) {
 		var result bson.M
@@ -148,6 +149,7 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 		} else {
 			log.Println("\nresult type:", reflect.TypeOf(result))
 			log.Println("result:", item.Name)
+			logs = append(logs, item)
 		}
 	}
 
