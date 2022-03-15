@@ -48,7 +48,7 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 
 // LoginPage displays the login page
 func (app *Config) LoginPage(w http.ResponseWriter, r *http.Request) {
-	render(w, "login.page.gohtml")
+	render(w, "login.page.gohtml", nil)
 }
 
 // LoginPagePost handles user login. Note that it calls the authentication microservice
@@ -153,5 +153,10 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	render(w, "dashboard.page.gohtml")
+	templateData := make(map[string]interface{})
+	templateData["logs"] = logs
+
+	render(w, "dashboard.page.gohtml", &TemplateData{
+		Data: templateData,
+	})
 }

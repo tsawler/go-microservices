@@ -7,7 +7,11 @@ import (
 	"net/http"
 )
 
-func render(w http.ResponseWriter, t string) {
+type TemplateData struct {
+	Data map[string]interface{}
+}
+
+func render(w http.ResponseWriter, t string, td *TemplateData) {
 	log.Println("rendering template", t)
 	partials := []string{
 		"./templates/base.layout.gohtml",
@@ -26,7 +30,7 @@ func render(w http.ResponseWriter, t string) {
 		return
 	}
 
-	if err := tmpl.Execute(w, nil); err != nil {
+	if err := tmpl.Execute(w, td); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
