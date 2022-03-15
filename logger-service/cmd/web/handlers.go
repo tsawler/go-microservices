@@ -44,14 +44,17 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	_ = writeJSON(w, http.StatusAccepted, resp)
 }
 
+// LoginPage displays the login page
 func (app *Config) LoginPage(w http.ResponseWriter, r *http.Request) {
 	render(w, "login.page.gohtml")
 }
 
+// LoginPagePost handles user login. Note that it calls the authentication microservice
 func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
-	// authentication-service
+	// it's always good to regenerate the session on login/logout
 	_ = app.Session.RenewToken(r.Context())
 
+	// parse the posted form data
 	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
@@ -60,6 +63,7 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 
+	// create a variable we'll post to the auth service as JSON
 	var requestPayload struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -86,11 +90,11 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	// make sure we get back the right status code
 	if response.StatusCode == http.StatusUnauthorized {
 		log.Println("wrong status code")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	} else if response.StatusCode != http.StatusAccepted {
 		log.Println("did not get status accepted")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 
@@ -105,13 +109,15 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt time.Time `json:"updated_at"`
 	}
 
-	err = readJSON(w, r, &user)
-	if err != nil {
-		log.Println("error reading json from auth:", err)
-	}
+	_ = readJSON(w, r, &user)
 
 	// set up session & log user in
 	app.Session.Put(r.Context(), "userID", user.ID)
+	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+}
 
-	w.Write([]byte("Auth worked!"))
+// Dashboard displays the dashboard page
+func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
+	log.Println("hit dashboard")
+	render(w, "dashboard.page.gohtml")
 }

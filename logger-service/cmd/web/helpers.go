@@ -72,6 +72,6 @@ func errorJSON(w http.ResponseWriter, err error, status ...int) error {
 }
 
 func (app *Config) IsAuthenticated(r *http.Request) bool {
-	exists := app.Session.Exists(r.Context(), "user_id")
+	exists := app.Session.Exists(r.Context(), "userID")
 	return exists
 }
