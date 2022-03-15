@@ -70,3 +70,8 @@ func errorJSON(w http.ResponseWriter, err error, status ...int) error {
 
 	return writeJSON(w, statusCode, payload)
 }
+
+func (app *Config) IsAuthenticated(r *http.Request) bool {
+	exists := app.Session.Exists(r.Context(), "user_id")
+	return exists
+}

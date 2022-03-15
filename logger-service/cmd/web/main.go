@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -17,7 +18,8 @@ var infoLog *log.Logger
 var client *mongo.Client
 
 type Config struct {
-	Mongo *mongo.Client
+	Mongo   *mongo.Client
+	Session *scs.SessionManager
 }
 
 func main() {
@@ -75,8 +77,15 @@ func main() {
 }
 
 func serve(mongo *mongo.Client) {
+	session := scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = false
+
 	app := Config{
-		Mongo: mongo,
+		Mongo:   mongo,
+		Session: session,
 	}
 
 	srv := &http.Server{

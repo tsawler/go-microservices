@@ -3,6 +3,7 @@ module log-service
 go 1.17
 
 require (
+	github.com/alexedwards/scs/v2 v2.5.0 // indirect
 	github.com/go-chi/chi/v5 v5.0.7 // indirect
 	github.com/go-chi/cors v1.2.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect

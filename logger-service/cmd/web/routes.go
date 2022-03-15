@@ -19,9 +19,12 @@ func (app *Config) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	mux.Use(app.SessionLoad)
+
 	mux.Post("/log", app.WriteLog)
 
 	mux.Get("/login", app.LoginPage)
+	mux.Post("/login", app.LoginPagePost)
 
 	return mux
 }
