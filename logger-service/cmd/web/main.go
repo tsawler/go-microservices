@@ -49,8 +49,6 @@ func main() {
 	// start webserver in its own GoRoutine
 	go serve(client)
 
-	log.Println("Starting RPC Server on port 5001")
-
 	// register the RPC server
 	err = rpc.Register(new(RPCServer))
 	if err != nil {
@@ -58,6 +56,7 @@ func main() {
 	}
 
 	// listen for RPC connections
+	log.Println("Starting RPC Server on port 5001")
 	listen, err := net.Listen("tcp", "0.0.0.0:5001")
 	if err != nil {
 		fmt.Println(err)
