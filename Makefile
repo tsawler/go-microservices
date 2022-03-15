@@ -27,7 +27,7 @@ start:
 ## stop: stop the front end
 stop:
 	@echo "Stopping front end..."
-	@-pkill -SIGTERM -f "./frontApp"
+	@-pkill -SIGTERM -f "./${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
 
 ## restart_broker: rebuilds and restarts broker-service
