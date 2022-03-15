@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Run command as described:
 # go build will build an executable file named server in the current directory
-RUN CGO_ENABLED=0 go build -o logServiceApp .
+RUN CGO_ENABLED=0 go build -o logServiceApp ./cmd/web
 
 RUN chmod +x /app/logServiceApp
 
