@@ -194,7 +194,7 @@
                 headers: headers,
             }
 
-            fetch(`http://localhost:8082/log`, body)
+            fetch(`http://localhost:8082/api/log`, body)
                 .then(response => response.json())
                 .then(data => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);
