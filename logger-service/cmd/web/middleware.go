@@ -7,6 +7,7 @@ func (app *Config) SessionLoad(next http.Handler) http.Handler {
 	return app.Session.LoadAndSave(next)
 }
 
+// Auth requires that users be logged in for any route that uses this middleware
 func (app *Config) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !app.IsAuthenticated(r) {
