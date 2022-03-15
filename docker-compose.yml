@@ -56,21 +56,6 @@ services:
       FROM_NAME: "John Smith"
       FROM_ADDRESS: john.smith@example.com
 
-
-
-  # rabbitmq: the rabbitmq server
-  rabbitmq:
-    image: 'rabbitmq:3-management'
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    restart: always
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
-
   # logger-service: a service to store logs
   logger-service:
     build:
@@ -85,6 +70,19 @@ services:
     volumes:
       - ./logs/:/app/logs
       - ./logger-service/templates/:/app/templates
+
+  # rabbitmq: the rabbitmq server
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
 
   # etcd: start etcd server
   etcd:

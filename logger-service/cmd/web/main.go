@@ -16,6 +16,7 @@ import (
 
 var infoLog *log.Logger
 var client *mongo.Client
+var ctx context.Context
 
 type Config struct {
 	Mongo   *mongo.Client
@@ -38,7 +39,7 @@ func main() {
 	client = mongoClient
 
 	// we'll use this context to disconnect from mongo, since it needs one
-	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, _ = context.WithTimeout(context.Background(), 15*time.Second)
 	// close connection when func exits
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {

@@ -4,8 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
+	"reflect"
 	"time"
 )
 
@@ -18,7 +22,6 @@ type JSONPayload struct {
 
 func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	// read json into var
-	log.Println("Received request")
 	var requestPayload JSONPayload
 	_ = readJSON(w, r, &requestPayload)
 
@@ -116,8 +119,37 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
 }
 
+type Logs struct {
+	ID        string
+	Name      string
+	Data      string
+	CreatedAt time.Time
+}
+
 // Dashboard displays the dashboard page
 func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
-	log.Println("hit dashboard")
+	collection := client.Database("logs").Collection("logs")
+	opts := options.Find()
+	cursor, err := collection.Find(context.TODO(), bson.D{}, opts)
+	if err != nil {
+		fmt.Println("Finding all documents ERROR:", err)
+	}
+	defer cursor.Close(ctx)
+
+	log.Println("Got cursor")
+
+	for cursor.Next(ctx) {
+		var result bson.M
+		var item Logs
+		err := cursor.Decode(&item)
+		if err != nil {
+			log.Println("cursor.Next() error:", err)
+			app.clientError(w, http.StatusBadRequest)
+		} else {
+			log.Println("\nresult type:", reflect.TypeOf(result))
+			log.Println("result:", item.Name)
+		}
+	}
+
 	render(w, "dashboard.page.gohtml")
 }

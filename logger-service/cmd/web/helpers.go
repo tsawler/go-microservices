@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -74,4 +75,9 @@ func errorJSON(w http.ResponseWriter, err error, status ...int) error {
 func (app *Config) IsAuthenticated(r *http.Request) bool {
 	exists := app.Session.Exists(r.Context(), "userID")
 	return exists
+}
+
+func (app *Config) clientError(w http.ResponseWriter, status int) {
+	log.Println("Client error with status of", status)
+	http.Error(w, http.StatusText(status), status)
 }
