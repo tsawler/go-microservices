@@ -84,6 +84,7 @@ services:
       replicas: 1
     volumes:
       - ./logs/:/app/logs
+      - ./logger-service/templates/:/app/templates
 
   # etcd: start etcd server
   etcd:

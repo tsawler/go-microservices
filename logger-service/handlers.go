@@ -39,3 +39,7 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	resp.Message = "logged"
 	_ = writeJSON(w, http.StatusAccepted, resp)
 }
+
+func (app *Config) LoginPage(w http.ResponseWriter, r *http.Request) {
+	render(w, "login.page.gohtml")
+}

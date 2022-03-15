@@ -1,0 +1,47 @@
+{{template "base" .}}
+
+{{define "content"}}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="mt-3">Login</h1>
+                <hr>
+                <form class="needs-validation" novalidate method="post" action="/login">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" name="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pass" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="pass" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "js"}}
+<script>
+    (function () {
+        'use strict'
+
+        let forms = document.querySelectorAll('.needs-validation')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{{end}}
