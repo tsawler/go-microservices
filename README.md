@@ -47,7 +47,8 @@ All make commands:
 ~~~
 tcs@Grendel go-microservices % make help
  Choose a command:
-  up                 build all projects and start docker compose
+  up                 starts all containers in the background without forcing build
+  up_build           build all projects and start docker compose
   down               stop docker compose
   start              starts the front end
   stop               stop the front end
