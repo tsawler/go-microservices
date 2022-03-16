@@ -116,6 +116,7 @@ func handlePayload(payload Payload) {
 			log.Println(err)
 		}
 		fmt.Println("Response from RPC:", res)
+
 	default:
 		// nothing to do
 	}
