@@ -140,11 +140,16 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	logEntry, err := app.Models.LogEntry.GetOne(id)
+	entry, err := app.Models.LogEntry.GetOne(id)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
-	w.Write([]byte(logEntry.Name))
+	templateData := make(map[string]interface{})
+	templateData["entry"] = entry
+
+	render(w, "entry.page.gohtml", &TemplateData{
+		Data: templateData,
+	})
 }

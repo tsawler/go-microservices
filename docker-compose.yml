@@ -68,7 +68,7 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - ./logs/:/app/logs
+      - ./logger-service/templates/:/app/templates
 
   # rabbitmq: the rabbitmq server
   rabbitmq:
