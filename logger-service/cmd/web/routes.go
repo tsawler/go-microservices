@@ -40,6 +40,7 @@ func (app *Config) webRouter() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(app.SessionLoad)
 
+	mux.Get("/", app.LoginPage)
 	mux.Get("/login", app.LoginPage)
 	mux.Post("/login", app.LoginPagePost)
 	mux.Get("/logout", app.Logout)
