@@ -3,9 +3,11 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"runtime/debug"
 )
 
 type jsonResponse struct {
@@ -77,7 +79,15 @@ func (app *Config) IsAuthenticated(r *http.Request) bool {
 	return exists
 }
 
+// clientError just fires back a client error when something goes wrong (bad request)
 func (app *Config) clientError(w http.ResponseWriter, status int) {
 	log.Println("Client error with status of", status)
 	http.Error(w, http.StatusText(status), status)
+}
+
+// serverError just fires back error 500 when something goes wrong
+func (app *Config) serverError(w http.ResponseWriter, err error) {
+	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
+	log.Println(trace)
+	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
