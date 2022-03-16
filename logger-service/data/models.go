@@ -60,7 +60,9 @@ func (l *LogEntry) Insert(entry LogEntry) error {
 
 // All returns all documents in the logs collection, by descending date/time.
 func (l *LogEntry) All() ([]*LogEntry, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
 	collection := client.Database("logs").Collection("logs")
 
 	opts := options.Find()
@@ -93,7 +95,9 @@ func (l *LogEntry) All() ([]*LogEntry, error) {
 // which this function receives to a mongo.ObjectID, which is what Mongo actually requires in
 // order to call the FindOne() function.
 func (l *LogEntry) GetOne(id string) (*LogEntry, error) {
-	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
 	collection := client.Database("logs").Collection("logs")
 
 	docID, err := primitive.ObjectIDFromHex(id)
