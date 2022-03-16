@@ -52,16 +52,14 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 
 // Logout logs the user out and redirects them to the login page
 func (app *Config) Logout(w http.ResponseWriter, r *http.Request) {
-	event := data.LogEntry{
-		Name: "authentication",
-		Data: fmt.Sprintf("%s logged out of the logger service", app.Session.GetString(r.Context(), "email")),
-	}
+	// log the event
+	_ = app.logEvent("authentication", fmt.Sprintf("%s logged out of the logger service", app.Session.GetString(r.Context(), "email")))
 
-	_ = app.Models.LogEntry.Insert(event)
-
+	// clean up session
 	_ = app.Session.Destroy(r.Context())
 	_ = app.Session.RenewToken(r.Context())
 
+	// redirect to login page
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
@@ -158,12 +156,7 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// log the event
-	event := data.LogEntry{
-		Name: "authentication",
-		Data: fmt.Sprintf("%s logged into the logger service", user.Data.Email),
-	}
-
-	_ = app.Models.LogEntry.Insert(event)
+	_ = app.logEvent("authentication", fmt.Sprintf("%s logged into the logger service", user.Data.Email))
 
 	// set up session & log user in
 	app.Session.Put(r.Context(), "userID", user.Data.ID)

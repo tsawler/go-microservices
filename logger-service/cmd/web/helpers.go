@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log-service/data"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 type jsonResponse struct {
@@ -90,4 +92,14 @@ func (app *Config) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
 	log.Println(trace)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+// logEvent saves an event to the logs collection in Mongo
+func (app *Config) logEvent(name, content string) error {
+	event := data.LogEntry{
+		Name:      name,
+		Data:      content,
+		CreatedAt: time.Now(),
+	}
+	return app.Models.LogEntry.Insert(event)
 }
