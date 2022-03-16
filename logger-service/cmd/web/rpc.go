@@ -10,11 +10,14 @@ import (
 // over RPC, as long as they are exported.
 type RPCServer struct{}
 
-// LogEntry is the type for writing data to mongo
+// LogEntry is the type for all data stored in the logs collection. Note that we specify
+// specific bson values, and we *must* include omitempty on ID, or newly inserted records will
+// have an empty id!
 type LogEntry struct {
-	Name      string
-	Data      string
-	CreatedAt time.Time
+	ID        string    `bson:"_id,omitempty"`
+	Name      string    `bson:"name"`
+	Data      string    `bson:"data"`
+	CreatedAt time.Time `bson:"created_at"`
 }
 
 // RPCPayload is the type for data we receive from RPC
@@ -34,7 +37,7 @@ func (r *RPCServer) LogInfo(payload RPCPayload, resp *string) error {
 		CreatedAt: time.Now(),
 	})
 	if err != nil {
-		log.Println(err)
+		log.Println("Error writing log in rpc.go, LogInfo", err)
 		return err
 	}
 

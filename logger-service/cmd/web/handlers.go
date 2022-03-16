@@ -118,13 +118,6 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
 }
 
-type Logs struct {
-	ID        string
-	Name      string
-	Data      string
-	CreatedAt time.Time
-}
-
 // Dashboard displays the dashboard page
 func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	collection := client.Database("logs").Collection("logs")
@@ -137,11 +130,11 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 	defer cursor.Close(ctx)
 
-	var logs []Logs
+	var logs []LogEntry
 
 	for cursor.Next(ctx) {
 		var result bson.M
-		var item Logs
+		var item LogEntry
 		err := cursor.Decode(&item)
 		if err != nil {
 			log.Println("cursor.Next() error:", err)
