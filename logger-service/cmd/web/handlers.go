@@ -37,12 +37,12 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create the response we'll send back as JSON
-	var resp struct {
-		Error   bool   `json:"error"`
-		Message string `json:"message"`
+	resp := jsonResponse{
+		Error:   false,
+		Message: "logged",
 	}
 
-	resp.Message = "logged"
+	// write the response back as JSON
 	_ = app.writeJSON(w, http.StatusAccepted, resp)
 }
 
