@@ -179,6 +179,7 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// DisplayOne is the handler to display a single log entry
 func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
