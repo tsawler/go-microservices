@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// client is our mongo client that allows us to perform operations on the mongo database
+// client is our mongo client that allows us to perform operations on the Mongo database.
 var client *mongo.Client
 
 // New is the function used to create an instance of the data package. It returns the type
@@ -41,7 +41,7 @@ type LogEntry struct {
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
 
-// Insert puts a document in the logs collection
+// Insert puts a document in the logs collection.
 func (l *LogEntry) Insert(entry LogEntry) error {
 	collection := client.Database("logs").Collection("logs")
 
@@ -58,7 +58,7 @@ func (l *LogEntry) Insert(entry LogEntry) error {
 	return nil
 }
 
-// All returns all documents in the logs collection, by descending date/time
+// All returns all documents in the logs collection, by descending date/time.
 func (l *LogEntry) All() ([]*LogEntry, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	collection := client.Database("logs").Collection("logs")
@@ -89,7 +89,9 @@ func (l *LogEntry) All() ([]*LogEntry, error) {
 	return logs, nil
 }
 
-// GetOne returns a single document, by ID
+// GetOne returns a single document, by ID. Note that we have to convert the parameter id
+// which this function receives to a mongo.ObjectID, which is what Mongo actually requires in
+// order to call the FindOne() function.
 func (l *LogEntry) GetOne(id string) (*LogEntry, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	collection := client.Database("logs").Collection("logs")
