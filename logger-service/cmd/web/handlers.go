@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// authServiceURL is the url to the authentication service. Since we're using
+// Docker, we specify the appropriate entry from docker-compose.yml
 const authServiceURL = "http://authentication-service/authenticate"
 
 // JSONPayload is the type for JSON posted to this API
