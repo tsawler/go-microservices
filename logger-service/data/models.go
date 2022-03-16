@@ -34,10 +34,10 @@ type Models struct {
 // specific bson values, and we *must* include omitempty on ID, or newly inserted records will
 // have an empty id!
 type LogEntry struct {
-	ID        string    `bson:"_id,omitempty"`
-	Name      string    `bson:"name"`
-	Data      string    `bson:"data"`
-	CreatedAt time.Time `bson:"created_at"`
+	ID        string    `bson:"_id,omitempty" json:"id,omitempty"`
+	Name      string    `bson:"name" json:"name"`
+	Data      string    `bson:"data" json:"data"`
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
 
 // Insert puts a document in the logs collection
