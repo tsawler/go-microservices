@@ -42,9 +42,10 @@ func (app *Config) webRouter() http.Handler {
 
 	mux.Get("/login", app.LoginPage)
 	mux.Post("/login", app.LoginPagePost)
+	mux.Get("/logout", app.Logout)
 
 	mux.Route("/admin", func(mux chi.Router) {
-		//mux.Use(app.Auth)
+		mux.Use(app.Auth)
 		mux.Get("/dashboard", app.Dashboard)
 		mux.Get("/log-entry/{id}", app.DisplayOne)
 	})

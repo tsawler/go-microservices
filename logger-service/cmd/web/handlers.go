@@ -48,6 +48,14 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	_ = writeJSON(w, http.StatusAccepted, resp)
 }
 
+// Logout logs the user out and redirects them to the login page
+func (app *Config) Logout(w http.ResponseWriter, r *http.Request) {
+	_ = app.Session.Destroy(r.Context())
+	_ = app.Session.RenewToken(r.Context())
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 // LoginPage displays the login page
 func (app *Config) LoginPage(w http.ResponseWriter, r *http.Request) {
 	render(w, "login.page.gohtml", nil)
