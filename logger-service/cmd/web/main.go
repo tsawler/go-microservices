@@ -85,7 +85,7 @@ func main() {
 	}
 }
 
-// serve starts the web server
+// serve starts the web server.
 func serve(app Config) {
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
