@@ -98,7 +98,7 @@ func serve(app Config) {
 	}
 }
 
-// connect opens a connection to mongo
+// Connect opens a connection to the Mongo database and returns a client.
 func connectToMongo() (*mongo.Client, error) {
 	// create connect options
 	clientOptions := options.Client().ApplyURI(mongoURL)
