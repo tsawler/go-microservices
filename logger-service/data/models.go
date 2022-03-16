@@ -42,20 +42,20 @@ type LogEntry struct {
 }
 
 // Insert puts a document in the logs collection
-func (l *LogEntry) Insert(entry LogEntry) (string, error) {
+func (l *LogEntry) Insert(entry LogEntry) error {
 	collection := client.Database("logs").Collection("logs")
 
-	result, err := collection.InsertOne(context.TODO(), LogEntry{
+	_, err := collection.InsertOne(context.TODO(), LogEntry{
 		Name:      entry.Name,
 		Data:      entry.Data,
 		CreatedAt: time.Now(),
 	})
 	if err != nil {
 		log.Println("Error inserting log entry:", err)
-		return "", err
+		return err
 	}
 
-	return result.InsertedID.(string), nil
+	return nil
 }
 
 // All returns all documents in the logs collection, by descending date/time
