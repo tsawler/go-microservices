@@ -31,9 +31,8 @@ func main() {
 	client = mongoClient
 
 	// We'll use this context to disconnect from mongo, since it needs one.
-	// We're not actually using cancel (the second return parameter) so we
-	// discard it with the blank identifier.
-	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
 
 	// close connection to Mongo when application exits
 	defer func() {
