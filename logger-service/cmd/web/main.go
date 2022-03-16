@@ -16,7 +16,8 @@ import (
 
 var client *mongo.Client
 
-const webPort = ":80"
+const webPort = "80"
+const rpcPort = "5001"
 const mongoURL = "mongodb://mongo:27017"
 
 type Config struct {
@@ -25,11 +26,13 @@ type Config struct {
 }
 
 func main() {
-	// connect to mongo
+	// Connect to Mongo and get a client.
 	mongoClient, err := connectToMongo()
 	client = mongoClient
 
-	// we'll use this context to disconnect from mongo, since it needs one
+	// We'll use this context to disconnect from mongo, since it needs one.
+	// We're not actually using cancel (the second return parameter) so we
+	// discard it with the blank identifier.
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 
 	// close connection to Mongo when application exits
@@ -39,7 +42,8 @@ func main() {
 		}
 	}()
 
-	// set up app
+	// Set up application configuration with session and our Models type,
+	// which allows us to interact with Mongo.
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -51,18 +55,18 @@ func main() {
 		Models:  data.New(client),
 	}
 
-	// start webserver in its own GoRoutine
+	// Start webserver in its own GoRoutine, passing it our app variable.
 	go serve(app)
 
-	// register the RPC server
+	// Register the RPC server.
 	err = rpc.Register(new(RPCServer))
 	if err != nil {
 		return
 	}
 
-	// listen for RPC connections
-	log.Println("Starting RPC Server on port 5001")
-	listen, err := net.Listen("tcp", "0.0.0.0:5001")
+	// Listen for RPC connections on port rpcPort
+	log.Println("Starting RPC Server on port", rpcPort)
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%s", rpcPort))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -83,7 +87,7 @@ func main() {
 // serve starts the web server
 func serve(app Config) {
 	srv := &http.Server{
-		Addr:    webPort,
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
