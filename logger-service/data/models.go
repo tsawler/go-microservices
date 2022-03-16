@@ -32,7 +32,8 @@ type Models struct {
 
 // LogEntry is the type for all data stored in the logs collection. Note that we specify
 // specific bson values, and we *must* include omitempty on ID, or newly inserted records will
-// have an empty id!
+// have an empty id! We also specify JSON struct tags, even though we don't use them yet. We
+// might in the future.
 type LogEntry struct {
 	ID        string    `bson:"_id,omitempty" json:"id,omitempty"`
 	Name      string    `bson:"name" json:"name"`
