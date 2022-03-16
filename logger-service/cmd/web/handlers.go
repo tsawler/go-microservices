@@ -75,6 +75,7 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	// get emal and password from form post
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 

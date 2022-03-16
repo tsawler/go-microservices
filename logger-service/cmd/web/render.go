@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -12,6 +11,8 @@ type TemplateData struct {
 	IsAuthenticated int
 }
 
+// addDefaultData adds whatever is specified in this function to all templates as
+// data that can be accessed directly.
 func (app *Config) addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
 	if app.Session.Exists(r.Context(), "userID") {
 		td.IsAuthenticated = 1
@@ -20,7 +21,9 @@ func (app *Config) addDefaultData(td *TemplateData, r *http.Request) *TemplateDa
 }
 
 func (app *Config) render(w http.ResponseWriter, r *http.Request, t string, td *TemplateData) {
-	log.Println("rendering template", t)
+	// we only have one partial, which is actually a layout, but since all of our pages
+	// require the layout, we need to include it when we call ParseFiles, below.
+	// If you have other partials you use in your templates, add them to this slice.
 	partials := []string{
 		"./templates/base.layout.gohtml",
 	}

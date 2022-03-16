@@ -14,9 +14,7 @@ import (
 	"time"
 )
 
-var infoLog *log.Logger
 var client *mongo.Client
-var ctx context.Context
 
 const webPort = ":80"
 const mongoURL = "mongodb://mongo:27017"
@@ -32,8 +30,9 @@ func main() {
 	client = mongoClient
 
 	// we'll use this context to disconnect from mongo, since it needs one
-	ctx, _ = context.WithTimeout(context.Background(), 15*time.Second)
-	// close connection when func exits
+	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
+
+	// close connection to Mongo when application exits
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
@@ -81,8 +80,8 @@ func main() {
 	}
 }
 
+// serve starts the web server
 func serve(app Config) {
-
 	srv := &http.Server{
 		Addr:    webPort,
 		Handler: app.routes(),
@@ -105,11 +104,11 @@ func connectToMongo() (*mongo.Client, error) {
 	})
 
 	// Connect to the MongoDB and return Client instance
-	client, err := mongo.Connect(context.TODO(), clientOptions)
+	c, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		fmt.Println("mongo.Connect() ERROR:", err)
 		return nil, err
 	}
 
-	return client, nil
+	return c, nil
 }
