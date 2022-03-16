@@ -22,7 +22,7 @@ type JSONPayload struct {
 func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	// read json into var
 	var requestPayload JSONPayload
-	_ = readJSON(w, r, &requestPayload)
+	_ = app.readJSON(w, r, &requestPayload)
 
 	// create the data we'll save to mongo in
 	// the correct format
@@ -36,7 +36,7 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	err := app.Models.LogEntry.Insert(entry)
 	if err != nil {
 		log.Println(err)
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -47,14 +47,14 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp.Message = "logged"
-	_ = writeJSON(w, http.StatusAccepted, resp)
+	_ = app.writeJSON(w, http.StatusAccepted, resp)
 }
 
 // Logout logs the user out and redirects them to the login page
 func (app *Config) Logout(w http.ResponseWriter, r *http.Request) {
 	event := data.LogEntry{
 		Name: "authentication",
-		Data: fmt.Sprintf("%s loggged out of the logger service", app.Session.GetString(r.Context(), "email")),
+		Data: fmt.Sprintf("%s logged out of the logger service", app.Session.GetString(r.Context(), "email")),
 	}
 
 	_ = app.Models.LogEntry.Insert(event)
@@ -103,7 +103,7 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	response, err := c.Do(request)
 	if err != nil {
 		log.Println(err)
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	defer response.Body.Close()
@@ -119,9 +119,6 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Since we are using http client here, we can't really use our
-	// readJSON helper function, so we'll do it by hand.
-	//
 	// Read the body of the response
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -147,13 +144,26 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	// declare a variable we can unmarshal the JSON into
 	var user userPayload
 
-	// parse the JSON
-	err = json.Unmarshal(body, &user)
+	// since we received the request from a remote host with http.Client,
+	// we need to build a new request with the body we received and pass it to
+	// app.readJSON
+	req, _ := http.NewRequest("POST", "/", bytes.NewReader(body))
+
+	// read the JSON
+	err = app.readJSON(w, req, &user)
 	if err != nil {
 		log.Println(err)
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
+
+	// log the event
+	event := data.LogEntry{
+		Name: "authentication",
+		Data: fmt.Sprintf("%s logged into the logger service", user.Data.Email),
+	}
+
+	_ = app.Models.LogEntry.Insert(event)
 
 	// set up session & log user in
 	app.Session.Put(r.Context(), "userID", user.Data.ID)
