@@ -16,9 +16,11 @@ import (
 
 var client *mongo.Client
 
-const webPort = "80"
-const rpcPort = "5001"
-const mongoURL = "mongodb://mongo:27017"
+const (
+	webPort  = "80"
+	rpcPort  = "5001"
+	mongoURL = "mongodb://mongo:27017"
+)
 
 type Config struct {
 	Session *scs.SessionManager
