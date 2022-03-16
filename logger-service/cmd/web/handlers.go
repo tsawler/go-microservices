@@ -58,7 +58,7 @@ func (app *Config) Logout(w http.ResponseWriter, r *http.Request) {
 
 // LoginPage displays the login page
 func (app *Config) LoginPage(w http.ResponseWriter, r *http.Request) {
-	render(w, "login.page.gohtml", nil)
+	app.render(w, r, "login.page.gohtml", nil)
 }
 
 // LoginPagePost handles user login. Note that it calls the authentication microservice
@@ -140,7 +140,7 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	templateData := make(map[string]interface{})
 	templateData["logs"] = logs
 
-	render(w, "dashboard.page.gohtml", &TemplateData{
+	app.render(w, r, "dashboard.page.gohtml", &TemplateData{
 		Data: templateData,
 	})
 }
@@ -157,7 +157,7 @@ func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
 	templateData := make(map[string]interface{})
 	templateData["entry"] = entry
 
-	render(w, "entry.page.gohtml", &TemplateData{
+	app.render(w, r, "entry.page.gohtml", &TemplateData{
 		Data: templateData,
 	})
 }

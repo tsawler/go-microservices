@@ -8,10 +8,18 @@ import (
 )
 
 type TemplateData struct {
-	Data map[string]interface{}
+	Data            map[string]interface{}
+	IsAuthenticated int
 }
 
-func render(w http.ResponseWriter, t string, td *TemplateData) {
+func (app *Config) addDefaultData(td *TemplateData, r *http.Request) *TemplateData {
+	if app.Session.Exists(r.Context(), "userID") {
+		td.IsAuthenticated = 1
+	}
+	return td
+}
+
+func (app *Config) render(w http.ResponseWriter, r *http.Request, t string, td *TemplateData) {
 	log.Println("rendering template", t)
 	partials := []string{
 		"./templates/base.layout.gohtml",
@@ -29,6 +37,10 @@ func render(w http.ResponseWriter, t string, td *TemplateData) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if td == nil {
+		td = &TemplateData{}
+	}
+	td = app.addDefaultData(td, r)
 
 	if err := tmpl.Execute(w, td); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
