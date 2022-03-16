@@ -7,33 +7,27 @@ import (
 	"github.com/go-chi/chi/v5"
 	"io"
 	"log"
-	"log-service/data"
 	"net/http"
 	"time"
 )
 
 const authServiceURL = "http://authentication-service/authenticate"
 
+// JSONPayload is the type for JSON posted to this API
 type JSONPayload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
 }
 
+// WriteLog is the handler to accept a post request consisting of json payload,
+// and then write it to Mongo
 func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	// read json into var
 	var requestPayload JSONPayload
 	_ = app.readJSON(w, r, &requestPayload)
 
-	// create the data we'll save to mongo in
-	// the correct format
-	entry := data.LogEntry{
-		Name:      requestPayload.Name,
-		Data:      requestPayload.Data,
-		CreatedAt: time.Now(),
-	}
-
 	// insert the data
-	err := app.Models.LogEntry.Insert(entry)
+	err := app.logEvent(requestPayload.Name, requestPayload.Data)
 	if err != nil {
 		log.Println(err)
 		_ = app.errorJSON(w, err, http.StatusBadRequest)
