@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"log-service/data"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -19,8 +20,8 @@ var client *mongo.Client
 var ctx context.Context
 
 type Config struct {
-	Mongo   *mongo.Client
 	Session *scs.SessionManager
+	Models  data.Models
 }
 
 func main() {
@@ -47,8 +48,20 @@ func main() {
 		}
 	}()
 
+	// set up app
+	session := scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = false
+
+	app := Config{
+		Session: session,
+		Models:  data.New(client),
+	}
+
 	// start webserver in its own GoRoutine
-	go serve(client)
+	go serve(app)
 
 	// register the RPC server
 	err = rpc.Register(new(RPCServer))
@@ -76,17 +89,7 @@ func main() {
 	}
 }
 
-func serve(mongo *mongo.Client) {
-	session := scs.New()
-	session.Lifetime = 24 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = false
-
-	app := Config{
-		Mongo:   mongo,
-		Session: session,
-	}
+func serve(app Config) {
 
 	srv := &http.Server{
 		Addr:    ":80",

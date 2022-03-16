@@ -2,13 +2,10 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"log-service/data"
 	"net/http"
-	"reflect"
 	"time"
 )
 
@@ -24,19 +21,23 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	var requestPayload JSONPayload
 	_ = readJSON(w, r, &requestPayload)
 
-	collection := app.Mongo.Database("logs").Collection("logs")
-	_, err := collection.InsertOne(context.TODO(), LogEntry{
+	// create the data we'll save to mongo in
+	// the correct format
+	entry := data.LogEntry{
 		Name:      requestPayload.Name,
 		Data:      requestPayload.Data,
 		CreatedAt: time.Now(),
-	})
+	}
 
+	// insert the data, ignoring returned id
+	_, err := app.Models.LogEntry.Insert(entry)
 	if err != nil {
 		log.Println(err)
 		_ = errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
+	// create the response we'll send back as JSON
 	var resp struct {
 		Error   bool   `json:"error"`
 		Message string `json:"message"`
@@ -120,30 +121,11 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 
 // Dashboard displays the dashboard page
 func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
-	collection := client.Database("logs").Collection("logs")
-	opts := options.Find()
-	cursor, err := collection.Find(context.TODO(), bson.D{}, opts)
+	// get the list of all log entries from mongo
+	logs, err := app.Models.LogEntry.All()
 	if err != nil {
-		log.Println("Finding all documents ERROR:", err)
+		log.Println("Error getting all log entries")
 		app.clientError(w, http.StatusBadRequest)
-		return
-	}
-	defer cursor.Close(ctx)
-
-	var logs []LogEntry
-
-	for cursor.Next(ctx) {
-		var result bson.M
-		var item LogEntry
-		err := cursor.Decode(&item)
-		if err != nil {
-			log.Println("cursor.Next() error:", err)
-			app.clientError(w, http.StatusBadRequest)
-		} else {
-			log.Println("\nresult type:", reflect.TypeOf(result))
-			log.Println("result:", item.Name)
-			logs = append(logs, item)
-		}
 	}
 
 	templateData := make(map[string]interface{})
