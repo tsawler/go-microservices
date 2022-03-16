@@ -57,12 +57,14 @@ func (l *LogEntry) Insert(entry LogEntry) (string, error) {
 	return result.InsertedID.(string), nil
 }
 
-// All returns all documents in the log collection
+// All returns all documents in the log collection, by descending date/time
 func (l *LogEntry) All() ([]*LogEntry, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	collection := client.Database("logs").Collection("logs")
 
 	opts := options.Find()
+	opts.SetSort(bson.D{{"created_at", -1}})
+
 	cursor, err := collection.Find(context.TODO(), bson.D{}, opts)
 	if err != nil {
 		log.Println("Finding all documents ERROR:", err)
@@ -86,6 +88,7 @@ func (l *LogEntry) All() ([]*LogEntry, error) {
 	return logs, nil
 }
 
+// GetOne returns a single document, by ID
 func (l *LogEntry) GetOne(id string) (*LogEntry, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	collection := client.Database("logs").Collection("logs")
