@@ -15,8 +15,8 @@ var client *mongo.Client
 
 // New is the function used to create an instance of the data package. It returns the type
 // Model, which embeds all the types we want to be available to our application.
-func New(dbPool *mongo.Client) Models {
-	client = dbPool
+func New(mongo *mongo.Client) Models {
+	client = mongo
 
 	return Models{
 		LogEntry: LogEntry{},
@@ -57,7 +57,7 @@ func (l *LogEntry) Insert(entry LogEntry) (string, error) {
 	return result.InsertedID.(string), nil
 }
 
-// All returns all documents in the log collection, by descending date/time
+// All returns all documents in the logs collection, by descending date/time
 func (l *LogEntry) All() ([]*LogEntry, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	collection := client.Database("logs").Collection("logs")
