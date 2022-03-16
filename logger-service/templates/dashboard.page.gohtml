@@ -19,7 +19,7 @@
                     <tbody>
                     {{range $logs}}
                         <tr>
-                            <td>{{.ID}}</td>
+                            <td><a href="/admin/log-entry/{{.ID}}">{{.ID}}</a></td>
                             <td>{{.Name}}</td>
                             <td>{{.CreatedAt}}</td>
                         </tr>

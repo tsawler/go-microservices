@@ -11,7 +11,6 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
-	"os"
 	"time"
 )
 
@@ -19,22 +18,15 @@ var infoLog *log.Logger
 var client *mongo.Client
 var ctx context.Context
 
+const webPort = ":80"
+const mongoURL = "mongodb://mongo:27017"
+
 type Config struct {
 	Session *scs.SessionManager
 	Models  data.Models
 }
 
 func main() {
-	// create a log file we can write to
-	infoLogFile, err := os.OpenFile("./logs/logger/info_log.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening error log file: %v", err)
-	}
-	defer infoLogFile.Close()
-
-	// create a logger that writes to our infoLogFile
-	infoLog = log.New(infoLogFile, "INFO\t", log.Ldate|log.Ltime)
-
 	// connect to mongo
 	mongoClient, err := connectToMongo()
 	client = mongoClient
@@ -92,11 +84,11 @@ func main() {
 func serve(app Config) {
 
 	srv := &http.Server{
-		Addr:    ":80",
+		Addr:    webPort,
 		Handler: app.routes(),
 	}
 
-	fmt.Println("Starting logging web service on port 80")
+	fmt.Println("Starting logging web service on port", webPort)
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
@@ -106,7 +98,7 @@ func serve(app Config) {
 // connect opens a connection to mongo
 func connectToMongo() (*mongo.Client, error) {
 	// create connect options
-	clientOptions := options.Client().ApplyURI("mongodb://mongo:27017")
+	clientOptions := options.Client().ApplyURI(mongoURL)
 	clientOptions.SetAuth(options.Credential{
 		Username: "admin",
 		Password: "password",

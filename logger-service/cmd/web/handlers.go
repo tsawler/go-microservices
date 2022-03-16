@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"log-service/data"
 	"net/http"
@@ -134,4 +135,16 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 	render(w, "dashboard.page.gohtml", &TemplateData{
 		Data: templateData,
 	})
+}
+
+func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	logEntry, err := app.Models.LogEntry.GetOne(id)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(logEntry.Name))
 }
