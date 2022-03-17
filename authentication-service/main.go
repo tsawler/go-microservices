@@ -24,7 +24,7 @@ type Config struct {
 
 func main() {
 	log.Println("---------------------------------------------")
-	log.Println("Attempting to connect to Postgres Database...")
+	log.Println("Attempting to connect to Postgres...")
 	// connect to the database
 	conn := connectToDB()
 	if conn == nil {
