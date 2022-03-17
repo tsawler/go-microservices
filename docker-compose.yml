@@ -7,18 +7,18 @@ services:
     build:
       context: .
       dockerfile: ./broker-service.dockerfile
+    restart: always
     ports:
       - "8080:80"
     deploy:
       mode: replicated
       replicas: 1
 
-  # queue-listener-service - watches rabbitmq for messages
-  queue-listener-service:
+  # listener-service - watches rabbitmq for messages
+  listener-service:
     build:
       context: .
-      dockerfile: ./queue-listener-service.dockerfile
-    restart: always
+      dockerfile: ./listener-service.dockerfile
     deploy:
       mode: replicated
       replicas: 1
@@ -28,7 +28,6 @@ services:
     build:
       context: .
       dockerfile: ./authentication-service.dockerfile
-    restart: always
     ports:
       - "8081:80"
     deploy:
@@ -36,25 +35,6 @@ services:
       replicas: 1
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
-
-  # mail-service - handles sending mail
-  mail-service:
-    build:
-      context: .
-      dockerfile: ./mail-service.dockerfile
-    restart: always
-    deploy:
-      mode: replicated
-      replicas: 1
-    environment:
-      MAIL_DOMAIN: localhost
-      MAIL_HOST: mailhog
-      MAIL_PORT: 1025
-      MAIL_ENCRYPTION: none
-      MAIL_USERNAME: ""
-      MAIL_PASSWORD: ""
-      FROM_NAME: "John Smith"
-      FROM_ADDRESS: john.smith@example.com
 
   # logger-service: a service to store logs
   logger-service:
@@ -70,6 +50,24 @@ services:
     volumes:
       - ./logger-service/templates/:/app/templates
 
+  # mail-service - handles sending mail
+  mail-service:
+    build:
+      context: .
+      dockerfile: ./mail-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_ENCRYPTION: none
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      FROM_NAME: "John Smith"
+      FROM_ADDRESS: john.smith@example.com
+
   # rabbitmq: the rabbitmq server
   rabbitmq:
     image: 'rabbitmq:3-management'
@@ -82,19 +80,6 @@ services:
       replicas: 1
     volumes:
       - ./db-data/rabbitmq/:/var/lib/rabbitmq/
-
-  # etcd: start etcd server
-  etcd:
-    image: docker.io/bitnami/etcd:3
-    ports:
-      - "2379:2379"
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./db-data/etcd/:/bitnami/etcd
 
   # mailhog: a fake smtp server with a web interface
   mailhog:

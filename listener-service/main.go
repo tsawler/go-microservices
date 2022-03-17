@@ -24,7 +24,8 @@ func main() {
 	defer rabbitConn.Close()
 
 	// start listening for messages
-	log.Println("Listening for RabbitMQ messages...")
+	log.Println("----------------------------------")
+	log.Println("Listening for and consuming RabbitMQ messages...")
 	consumer, err := event.NewConsumer(rabbitConn)
 	if err != nil {
 		panic(err)

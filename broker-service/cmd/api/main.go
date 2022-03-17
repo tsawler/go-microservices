@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"log"
 	"net/http"
 	"os"
 	"time"
 )
+
+const webPort = "80"
 
 type Config struct {
 	Rabbit *amqp.Connection
@@ -15,6 +18,8 @@ type Config struct {
 func main() {
 	var rabbitConn *amqp.Connection
 	var counts int64
+	log.Println("--------------------------")
+	log.Println("Starting broker-service...")
 
 	// don't continue until rabbitmq is ready
 	for {
@@ -43,8 +48,9 @@ func main() {
 		Rabbit: rabbitConn,
 	}
 
+	log.Println("Starting broker service on port", webPort)
 	srv := &http.Server{
-		Addr:    ":80",
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 

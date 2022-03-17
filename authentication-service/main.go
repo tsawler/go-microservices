@@ -15,7 +15,6 @@ import (
 
 const webPort = "80"
 
-var conn *sql.DB
 var counts int64
 
 type Config struct {
@@ -24,8 +23,13 @@ type Config struct {
 }
 
 func main() {
-
-	connectToDB()
+	log.Println("---------------------------------------------")
+	log.Println("Attempting to connect to Postgres Database...")
+	// connect to the database
+	conn := connectToDB()
+	if conn == nil {
+		log.Panic("can't connect to postgres!")
+	}
 
 	app := Config{
 		DB:     conn,
@@ -37,7 +41,7 @@ func main() {
 		Handler: app.routes(),
 	}
 
-	fmt.Printf("Starting authentication end service on port %s\n", webPort)
+	log.Printf("Starting authentication end service on port %s\n", webPort)
 	err := srv.ListenAndServe()
 
 	if err != nil {
@@ -45,26 +49,26 @@ func main() {
 	}
 }
 
-func connectToDB() {
+func connectToDB() *sql.DB {
 	// connect to postgres
 	dsn := os.Getenv("DSN")
 
 	for {
 		connection, err := openDB(dsn)
 		if err != nil {
-			fmt.Println("Postgres not ready...")
+			log.Println("Postgres not ready...")
 			counts++
 		} else {
-			conn = connection
-			break
+			log.Println("Connected to database!")
+			return connection
 		}
 
 		if counts > 10 {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Println(err)
+			return nil
 		}
 
-		fmt.Println("Backing off for two seconds...")
+		log.Println("Backing off for two seconds...")
 		time.Sleep(2 * time.Second)
 		continue
 	}

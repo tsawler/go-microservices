@@ -92,6 +92,7 @@ func serve(app Config) {
 		Handler: app.routes(),
 	}
 
+	fmt.Println("--------------------------------------")
 	fmt.Println("Starting logging web service on port", webPort)
 	err := srv.ListenAndServe()
 	if err != nil {

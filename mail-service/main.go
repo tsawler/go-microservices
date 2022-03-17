@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+const webPort = "80"
+
 // Config is the application Config, shared with functions by using it as a receiver
 type Config struct {
 	Mailer Mail
@@ -19,13 +21,14 @@ func main() {
 		Mailer: createMail(),
 	}
 
+	log.Println("--------------------------------")
+	log.Println("Starting mail-service on port", webPort)
 	// define a server that listens on port 80 and uses our routes()
 	srv := &http.Server{
-		Addr:    ":80",
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
-	fmt.Println("Starting mail service on port 80")
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)

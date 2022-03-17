@@ -6,11 +6,58 @@ up:
 	docker-compose up -d
 	@echo "Docker images started!"
 
-## up_build: build all projects and start docker compose
+## up_build: stops docker-compose (if running), builds all projects and starts docker compose
 up_build:
+	@echo "Stopping docker images (if running...)"
+	docker-compose down
 	@echo "Building (when required) and starting docker images..."
 	docker-compose up --build -d
 	@echo "Docker images built and started!"
+
+## auth: stops authentication-service, removes docker image, builds service, and starts it
+auth:
+	@echo "Building authentication-service docker image..."
+	docker-compose stop authentication-service
+	docker-compose rm -f authentication-service
+	docker-compose up --build -d authentication-service
+	docker-compose start authentication-service
+	@echo "authentication-service built and started!"
+
+## broker: stops broker-service, removes docker image, builds service, and starts it
+broker:
+	@echo "Building broker-service docker image..."
+	docker-compose stop broker-service
+	docker-compose rm -f broker-service
+	docker-compose up --build -d broker-service
+	docker-compose start broker-service
+	@echo "broker-service rebuilt and started!"
+
+## logger: stops logger-service, removes docker image, builds service, and starts it
+logger:
+	@echo "Building logger-service docker image..."
+	docker-compose stop logger-service
+	docker-compose rm -f logger-service
+	docker-compose up --build -d logger-service
+	docker-compose start logger-service
+	@echo "broker-service rebuilt and started!"
+
+## mail: stops mail-service, removes docker image, builds service, and starts it
+mail:
+	@echo "Building mail-service docker image..."
+	docker-compose stop mail-service
+	docker-compose rm -f mail-service
+	docker-compose up --build -d mail-service
+	docker-compose start mail-service
+	@echo "mail-service rebuilt and started!"
+
+## listener: stops listener-service, removes docker image, builds service, and starts it
+listener:
+	@echo "Building listener-service docker image..."
+	docker-compose stop listener-service
+	docker-compose rm -f listener-service
+	docker-compose up --build -d listener-service
+	docker-compose start listener-service
+	@echo "listener-service rebuilt and started!"
 
 ## down: stop docker compose
 down:
@@ -30,36 +77,6 @@ stop:
 	@-pkill -SIGTERM -f "./${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
 
-## restart_broker: rebuilds and restarts broker-service
-restart_broker:
-	@echo "Stopping broker service"
-	docker-compose build broker-service && docker-compose up -d
-	@echo "Restarted!"
-
-## restart_auth: rebuilds and restarts authentication-service
-restart_auth:
-	@echo "Stopping authentication service"
-	docker-compose build authentication-service && docker-compose up -d
-	@echo "Restarted!"
-
-## restart_listener: rebuilds and restarts queue-listener-service
-restart_listener:
-	@echo "Stopping queue listener service"
-	docker-compose build queue-listener-service && docker-compose up -d
-	@echo "Restarted!"
-
-## restart_logger: rebuilds and restarts logger-service
-restart_logger:
-	@echo "Stopping logger service"
-	docker-compose build logger-service && docker-compose up -d
-	@echo "Restarted!"
-
-## restart_mail: rebuilds and restarts mail-service
-restart_mail:
-	@echo "Stopping mail service"
-	docker-compose build mail-service && docker-compose up -d
-	@echo "Restarted!"
-
 ## test: runs all tests
 test:
 	@echo "Testing..."
@@ -70,9 +87,9 @@ clean:
 	@echo "Cleaning..."
 	@cd authentication-service && go clean
 	@cd front-end && go clean
-	@cd front-end && rm ${FRONT_END_BINARY}
+	@cd front-end && rm -f ${FRONT_END_BINARY}
 	@cd logger-service && go clean
-	@cd queue-listener-service && go clean
+	@cd listener-service && go clean
 	@echo "Cleaned!"
 
 ## help: displays help
