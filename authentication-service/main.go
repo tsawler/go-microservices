@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+const webPort = "80"
+
 var conn *sql.DB
 var counts int64
 
@@ -31,7 +33,7 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    ":80",
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 	fmt.Println("Starting authentication end service on port 80")
