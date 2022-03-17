@@ -8,6 +8,10 @@
                 <h1 class="mt-3">Dashboard</h1>
                 <hr>
 
+                <div class="float-end">
+                    <a href="/admin/delete-all" class="btn btn-outline-danger">Delete All</a>
+                </div>
+
                 <table class="table table-compact table-striped">
                     <thead>
                     <tr>
@@ -24,7 +28,6 @@
                             <td>{{.CreatedAt.Format "2006-01-02 03:04:05"}} UTC</td>
                         </tr>
                     {{end}}
-
                     </tbody>
                 </table>
 

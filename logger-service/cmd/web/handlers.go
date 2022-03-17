@@ -196,3 +196,13 @@ func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
 		Data: templateData,
 	})
 }
+
+// DeleteAll drops everything in the collection and redirects to the same page
+func (app *Config) DeleteAll(w http.ResponseWriter, r *http.Request) {
+	err := app.Models.LogEntry.DropCollection()
+	if err != nil {
+		log.Println(err)
+	}
+
+	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+}

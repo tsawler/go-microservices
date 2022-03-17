@@ -49,6 +49,7 @@ func (app *Config) webRouter() http.Handler {
 		mux.Use(app.Auth)
 		mux.Get("/dashboard", app.Dashboard)
 		mux.Get("/log-entry/{id}", app.DisplayOne)
+		mux.Get("/delete-all", app.DeleteAll)
 	})
 
 	return mux
