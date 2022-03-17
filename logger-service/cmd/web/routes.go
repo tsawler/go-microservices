@@ -10,6 +10,7 @@ import (
 func (app *Config) routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(middleware.Recoverer)
+	mux.Use(middleware.Heartbeat("/ping"))
 
 	mux.Mount("/", app.webRouter())
 	mux.Mount("/api", app.apiRouter())
