@@ -13,7 +13,6 @@ In addition to those services, the included `docker-compose.yml` at the root lev
 starts the following services:
 
 - Postgresql 14
-- etcd
 - mailhog
 - MongoDB
 
@@ -47,17 +46,17 @@ All make commands:
 ~~~
 tcs@Grendel go-microservices % make help
  Choose a command:
-  up                 starts all containers in the background without forcing build
-  up_build           build all projects and start docker compose
-  down               stop docker compose
-  start              starts the front end
-  stop               stop the front end
-  restart_broker     rebuilds and restarts broker-service
-  restart_auth       rebuilds and restarts authentication-service
-  restart_listener   rebuilds and restarts queue-listener-service
-  restart_logger     rebuilds and restarts logger-service
-  restart_mail       rebuilds and restarts mail-service
-  test               runs all tests
-  clean              runs go clean and deletes binaries
-  help               displays help
+  up         starts all containers in the background without forcing build
+  up_build   stops docker-compose (if running), builds all projects and starts docker compose
+  auth       stops authentication-service, removes docker image, builds service, and starts it
+  broker     stops broker-service, removes docker image, builds service, and starts it
+  logger     stops logger-service, removes docker image, builds service, and starts it
+  mail       stops mail-service, removes docker image, builds service, and starts it
+  listener   stops listener-service, removes docker image, builds service, and starts it
+  down       stop docker compose
+  start      starts the front end
+  stop       stop the front end
+  test       runs all tests
+  clean      runs go clean and deletes binaries
+  help       displays help
 ~~~
