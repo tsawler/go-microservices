@@ -56,13 +56,13 @@ func connectToDB() {
 			break
 		}
 
-		if counts > 5 {
+		if counts > 10 {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		fmt.Println("Backing off for one second...")
-		time.Sleep(1 * time.Second)
+		fmt.Println("Backing off for two seconds...")
+		time.Sleep(2 * time.Second)
 		continue
 	}
 }
