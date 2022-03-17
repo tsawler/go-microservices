@@ -9,7 +9,9 @@
                 <hr>
 
                 <div class="float-end">
-                    <a href="/admin/delete-all" class="btn btn-outline-danger">Delete All</a>
+                    <button
+                       data-bs-toggle="modal" data-bs-target="#confirmModal"
+                        class="btn btn-outline-danger">Delete All</button>
                 </div>
 
                 <table class="table table-compact table-striped">
@@ -34,4 +36,32 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" tabindex="-1" id="confirmModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete all?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete all entries?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button id="deleteAll" type="button" class="btn btn-danger">Delete everything</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{{end}}
+
+{{define "js"}}
+<script>
+document.getElementById("deleteAll").addEventListener("click", function() {
+    location.href="/admin/delete-all";
+})
+</script>
+
 {{end}}
