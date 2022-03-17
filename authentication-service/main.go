@@ -36,7 +36,7 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
-	fmt.Println("Starting authentication end service on port 80")
+	fmt.Printf("Starting authentication end service on port %s\n", webPort)
 	err := srv.ListenAndServe()
 
 	if err != nil {
