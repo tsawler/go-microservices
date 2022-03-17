@@ -10,7 +10,8 @@
 
                 <div class="float-end">
                     <button data-bs-toggle="modal" data-bs-target="#confirmModal"
-                       class="btn btn-outline-danger">Delete All</button>
+                            class="btn btn-outline-danger">Delete All
+                    </button>
                 </div>
 
                 <table class="table table-compact table-striped">
@@ -22,11 +23,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{range $logs}}
+                    {{if gt 0 (len $logs)}}
+                        {{range $logs}}
+                            <tr>
+                                <td><a href="/admin/log-entry/{{.ID}}">{{.ID}}</a></td>
+                                <td>{{.Name}}</td>
+                                <td>{{.CreatedAt.Format "2006-01-02 03:04:05"}} UTC</td>
+                            </tr>
+                        {{end}}
+                    {{else}}
                         <tr>
-                            <td><a href="/admin/log-entry/{{.ID}}">{{.ID}}</a></td>
-                            <td>{{.Name}}</td>
-                            <td>{{.CreatedAt.Format "2006-01-02 03:04:05"}} UTC</td>
+                            <td colspan="3">No entries</td>
                         </tr>
                     {{end}}
                     </tbody>
@@ -57,10 +64,10 @@
 {{end}}
 
 {{define "js"}}
-<script>
-document.getElementById("deleteAll").addEventListener("click", function() {
-    location.href="/admin/delete-all";
-})
-</script>
+    <script>
+        document.getElementById("deleteAll").addEventListener("click", function () {
+            location.href = "/admin/delete-all";
+        })
+    </script>
 
 {{end}}
