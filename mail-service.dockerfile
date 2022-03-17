@@ -1,5 +1,5 @@
 # The base go-image
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine as builder
 
 # Create a directory for the app
 RUN mkdir /app
@@ -15,6 +15,14 @@ WORKDIR /app
 RUN CGO_ENABLED=0 go build -o mailerServiceApp .
 
 RUN chmod +x /app/mailerServiceApp
+
+# create a tiny image for use
+FROM alpine:latest
+RUN mkdir /app
+RUN mkdir /templates
+
+COPY --from=builder /app/mailerServiceApp /app
+COPY --from=builder /app/templates /templates
 
 # Run the server executable
 CMD [ "/app/mailerServiceApp" ]

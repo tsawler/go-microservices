@@ -1,5 +1,5 @@
 # The base go-image
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine as builder
 
 # Create a directory for the app
 RUN mkdir /app
@@ -15,6 +15,12 @@ WORKDIR /app
 RUN CGO_ENABLED=0 go build -o authApp .
 
 RUN chmod +x /app/authApp
+
+# create a tiny image for use
+FROM alpine:latest
+RUN mkdir /app
+
+COPY --from=builder /app/authApp /app
 
 # Run the server executable
 CMD [ "/app/authApp" ]
