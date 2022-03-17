@@ -36,6 +36,7 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
+
 	fmt.Printf("Starting authentication end service on port %s\n", webPort)
 	err := srv.ListenAndServe()
 
