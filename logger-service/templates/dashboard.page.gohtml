@@ -23,7 +23,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{if gt 0 (len $logs)}}
+                    {{if gt (len $logs) 0}}
                         {{range $logs}}
                             <tr>
                                 <td><a href="/admin/log-entry/{{.ID}}">{{.ID}}</a></td>
@@ -69,5 +69,4 @@
             location.href = "/admin/delete-all";
         })
     </script>
-
 {{end}}
