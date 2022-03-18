@@ -14,8 +14,11 @@ import (
 const webPort = "80"
 
 type Config struct {
-	Rabbit *amqp.Connection
-	Etcd   *clientv3.Client
+	Rabbit          *amqp.Connection
+	Etcd            *clientv3.Client
+	LogServiceURLs  map[string]string
+	MailServiceURLs map[string]string
+	AuthServiceURLs map[string]string
 }
 
 func main() {
@@ -44,6 +47,11 @@ func main() {
 		Rabbit: rabbitConn,
 		Etcd:   etcConn,
 	}
+
+	// get service urls
+
+	// watch service urls
+	go app.watchEtcd()
 
 	log.Println("Starting broker service on port", webPort)
 	srv := &http.Server{
