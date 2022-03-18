@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// SendMail receives a json payload for a message, and sends it
 func (app *Config) SendMail(w http.ResponseWriter, r *http.Request) {
 	type mailMessage struct {
 		From    string `json:"from"`
