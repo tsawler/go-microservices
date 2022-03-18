@@ -90,7 +90,8 @@ func (app *Config) LoginPagePost(w http.ResponseWriter, r *http.Request) {
 	// create json we'll send to the authentication-service
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
 
-	// call the authentication-service
+	// call the authentication-service; we need a request, so let's build one, and populate
+	// its body with the jsonData we just created
 	request, err := http.NewRequest("POST", authServiceURL, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
 

@@ -51,7 +51,8 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	// create json we'll send to the authentication-service
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
 
-	// call the authentication-service
+	// call the authentication-service; we need a request, so let's build one, and populate
+	// its body with the jsonData we just created
 	request, err := http.NewRequest("POST", authServiceURL, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
 
@@ -104,6 +105,7 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(out)
 }
 
+// MailMessagePayload is the type for JSON describing a message to be sent
 type MailMessagePayload struct {
 	From    string `json:"from"`
 	To      string `json:"to"`
@@ -111,13 +113,15 @@ type MailMessagePayload struct {
 	Message string `json:"message"`
 }
 
+// SendMailMessage sends a mail message which is received as JSON
 func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
 	var msg MailMessagePayload
 	_ = readJSON(w, r, &msg)
 
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
-	// call the mail-service
+	// call the mail-service; we need a request, so let's build one, and populate
+	// its body with the jsonData we just created
 	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
 
