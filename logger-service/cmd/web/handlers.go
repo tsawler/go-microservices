@@ -171,7 +171,7 @@ func (app *Config) Dashboard(w http.ResponseWriter, r *http.Request) {
 		app.clientError(w, http.StatusBadRequest)
 	}
 
-	templateData := make(map[string]interface{})
+	templateData := make(map[string]any)
 	templateData["logs"] = logs
 
 	app.render(w, r, "dashboard.page.gohtml", &TemplateData{
@@ -189,7 +189,7 @@ func (app *Config) DisplayOne(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateData := make(map[string]interface{})
+	templateData := make(map[string]any)
 	templateData["entry"] = entry
 
 	app.render(w, r, "entry.page.gohtml", &TemplateData{

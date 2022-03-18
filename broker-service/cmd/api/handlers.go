@@ -15,8 +15,8 @@ const mailServiceURL = "http://mail-service/send"
 
 // Payload is the type for data we push into RabbitMQ
 type Payload struct {
-	Name string      `json:"name"`
-	Data interface{} `json:"data"`
+	Name string `json:"name"`
+	Data any    `json:"data"`
 }
 
 // Broker is a simple test handler for the broker

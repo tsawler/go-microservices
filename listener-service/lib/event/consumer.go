@@ -124,7 +124,7 @@ func handlePayload(payload Payload) {
 
 // rpcPushToLogger pushes data to the logger-service via RPC, where
 // it gets stored into a mongo database
-func rpcPushToLogger(function string, data interface{}) (string, error) {
+func rpcPushToLogger(function string, data any) (string, error) {
 	c, err := rpc.Dial("tcp", "logger-service:5001")
 	if err != nil {
 		log.Println(err)

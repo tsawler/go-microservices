@@ -7,7 +7,7 @@ import (
 )
 
 type TemplateData struct {
-	Data            map[string]interface{}
+	Data            map[string]any
 	IsAuthenticated int
 }
 

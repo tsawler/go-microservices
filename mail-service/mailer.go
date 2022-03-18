@@ -27,8 +27,8 @@ type Message struct {
 	To          string
 	Subject     string
 	Attachments []string
-	Data        interface{}
-	DataMap     map[string]interface{}
+	Data        any
+	DataMap     map[string]any
 }
 
 // SendSMTPMessage builds and sends an email message using SMTP. This is called by ListenForMail,
@@ -42,7 +42,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 		msg.FromName = m.FromName
 	}
 
-	data := map[string]interface{}{
+	data := map[string]any{
 		"message": msg.Data,
 	}
 	msg.DataMap = data
