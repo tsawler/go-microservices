@@ -26,5 +26,8 @@ func (app *Config) routes() http.Handler {
 	mux.Post("/authenticate", app.BrokerAuth)
 	mux.Post("/mail", app.SendMailMessage)
 
+	// a route for everything
+	mux.Post("/submit", app.HandleSubmission)
+
 	return mux
 }

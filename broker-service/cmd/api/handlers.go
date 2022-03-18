@@ -147,6 +147,12 @@ func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// HandleSubmission handles a JSON payload that describes an action to take,
+// processes it, and sends it where it needs to go
+func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
+	// TODO - handle log, mail, auth,
+}
+
 // pushToQueue pushes a message into RabbitMQ
 func (app *Config) pushToQueue(name, msg string) error {
 	emitter, err := event.NewEventEmitter(app.Rabbit)
