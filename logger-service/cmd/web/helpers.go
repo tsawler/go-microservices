@@ -76,7 +76,8 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) er
 	return app.writeJSON(w, statusCode, payload)
 }
 
-func (app *Config) IsAuthenticated(r *http.Request) bool {
+// isAuthenticated checks to see if a user is authenticated by looking for userID in session
+func (app *Config) isAuthenticated(r *http.Request) bool {
 	exists := app.Session.Exists(r.Context(), "userID")
 	return exists
 }
