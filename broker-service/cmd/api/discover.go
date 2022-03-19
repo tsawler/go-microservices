@@ -9,7 +9,8 @@ import (
 	"time"
 )
 
-//
+// watchEtcd runs in the background, looking for changes in etcd. When it finds changes
+// hosts, it updates the appropriate map in the *Config receiver.
 func (app *Config) watchEtcd() {
 	for {
 		// watch for service changes
