@@ -7,6 +7,7 @@ import (
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"
 	"net/http"
 	"os"
@@ -20,6 +21,7 @@ var counts int64
 type Config struct {
 	DB     *sql.DB
 	Models data.Models
+	Etcd   *clientv3.Client
 }
 
 func main() {
@@ -35,6 +37,9 @@ func main() {
 		DB:     conn,
 		Models: data.New(conn),
 	}
+
+	app.registerService()
+	defer app.Etcd.Close()
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),

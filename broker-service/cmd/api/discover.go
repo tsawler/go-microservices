@@ -53,7 +53,7 @@ func (app *Config) watchEtcd() {
 				key := string(item.Kv.Key)
 				value := string(item.Kv.Value)
 				var deleteURL = false
-				if strings.HasPrefix(eventType, "DELETE") {
+				if strings.Contains(eventType, "DELETE") {
 					deleteURL = true
 				}
 
@@ -91,12 +91,12 @@ func (app *Config) watchEtcd() {
 }
 
 // GetServiceURL will get a service's url from those listed as available in etcd
-func (app *Config) GetServiceURL(serviceType string) (string, error) {
+func (app *Config) GetServiceURL(serviceType string) string {
 	var serviceURL string
 
 	// get service URL from etcd
 	switch serviceType {
-	case "mail:":
+	case "mail":
 		serviceURL = getUrlFromMap(app.MailServiceURLs)
 	case "logger":
 		serviceURL = getUrlFromMap(app.LogServiceURLs)
@@ -104,7 +104,7 @@ func (app *Config) GetServiceURL(serviceType string) (string, error) {
 		serviceURL = getUrlFromMap(app.AuthServiceURLs)
 	}
 
-	return serviceURL, nil
+	return serviceURL
 }
 
 // getUrlFromMap returns a random value from available urls in
@@ -113,13 +113,14 @@ func (app *Config) GetServiceURL(serviceType string) (string, error) {
 func getUrlFromMap(m map[string]string) string {
 	var u string
 	for k, _ := range m {
+		log.Println("Going through map")
 		u = k
 		break
 	}
 	return u
 }
 
-// connectToRabbit tries to connect to etcd, for up to 30 seconds
+// connectToEtcd tries to connect to etcd, for up to 30 seconds
 func connectToEtcd() (*clientv3.Client, error) {
 	var cli *clientv3.Client
 	var counts = 0

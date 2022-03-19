@@ -10,9 +10,6 @@ import (
 	"net/http"
 )
 
-const authServiceURL = "http://authentication-service/authenticate"
-const mailServiceURL = "http://mail-service/send"
-
 // Payload is the type for data we push into RabbitMQ
 type Payload struct {
 	Name string `json:"name"`
@@ -52,10 +49,15 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
 
 	// call the authentication-service; we need a request, so let's build one, and populate
-	// its body with the jsonData we just created
+	// its body with the jsonData we just created. First we get the correct url for our
+	// auth service from our service map.
+	authServiceURL := fmt.Sprintf("http://%s/authenticate", app.GetServiceURL("auth"))
+
+	// now build the request and set header
 	request, err := http.NewRequest("POST", authServiceURL, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
 
+	// call the service
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
@@ -121,7 +123,11 @@ func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
 	// call the mail-service; we need a request, so let's build one, and populate
-	// its body with the jsonData we just created
+	// its body with the jsonData we just created. First we get the correct server
+	// to call from our service map.
+	mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
+
+	// now post to the mail service
 	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json")
 
