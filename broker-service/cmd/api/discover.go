@@ -12,7 +12,7 @@ import (
 //
 func (app *Config) watchEtcd() {
 	for {
-		// watch for mail service changes
+		// watch for service changes
 		watchKey := app.Etcd.Watch(context.Background(), "/mail/", clientv3.WithPrefix())
 		for resp := range watchKey {
 			for _, item := range resp.Events {
@@ -20,12 +20,16 @@ func (app *Config) watchEtcd() {
 				eventType := item.Type.String()
 				key := string(item.Kv.Key)
 				value := string(item.Kv.Value)
+				var deleteURL = false
+				if strings.HasPrefix(eventType, "DELETE") {
+					deleteURL = true
+				}
 
 				// add to or remove from service maps (using url as key, and empty string as value)
 				switch {
 				case strings.HasPrefix(key, "mail"):
 					// mail
-					if strings.HasPrefix(eventType, "DELETE") {
+					if deleteURL {
 						delete(app.MailServiceURLs, key)
 					} else {
 						app.MailServiceURLs[value] = ""
@@ -33,7 +37,7 @@ func (app *Config) watchEtcd() {
 
 				case strings.HasPrefix(key, "logger"):
 					// logger
-					if strings.HasPrefix(eventType, "DELETE") {
+					if deleteURL {
 						delete(app.LogServiceURLs, key)
 					} else {
 						app.LogServiceURLs[value] = ""
@@ -41,7 +45,7 @@ func (app *Config) watchEtcd() {
 
 				case strings.HasPrefix(key, "auth"):
 					// authentication
-					if strings.HasPrefix(eventType, "DELETE") {
+					if deleteURL {
 						delete(app.AuthServiceURLs, key)
 					} else {
 						app.AuthServiceURLs[value] = ""
