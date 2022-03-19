@@ -19,6 +19,7 @@ starts the following services:
 - Postgresql 14
 - mailhog
 - MongoDB
+- etcd
 
 ## Running the project
 From the root level of the project, execute this command (this assumes that you have 
