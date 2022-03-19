@@ -9,6 +9,35 @@ import (
 	"time"
 )
 
+func (app *Config) getServiceURLs() {
+	kv := clientv3.NewKV(app.Etcd)
+	app.MailServiceURLs = make(map[string]string)
+	app.LogServiceURLs = make(map[string]string)
+	app.AuthServiceURLs = make(map[string]string)
+
+	prefixes := []string{"/mail/", "/logger/", "/auth/"}
+
+	for _, curPrefix := range prefixes {
+		getResp, err := kv.Get(context.TODO(), curPrefix, clientv3.WithPrefix())
+		if err != nil {
+			log.Println(err)
+		}
+
+		for _, k := range getResp.Kvs {
+			log.Println("Key", string(k.Key))
+			log.Println("Adding", string(k.Value), "to", curPrefix, "service map")
+			switch curPrefix {
+			case "/mail/":
+				app.MailServiceURLs[string(k.Value)] = ""
+			case "/logger/":
+				app.LogServiceURLs[string(k.Value)] = ""
+			case "/auth/":
+				app.AuthServiceURLs[string(k.Value)] = ""
+			}
+		}
+	}
+}
+
 // watchEtcd runs in the background, looking for changes in etcd. When it finds changes
 // hosts, it updates the appropriate map in the *Config receiver.
 func (app *Config) watchEtcd() {
@@ -16,7 +45,9 @@ func (app *Config) watchEtcd() {
 		// watch for service changes
 		watchKey := app.Etcd.Watch(context.Background(), "/mail/", clientv3.WithPrefix())
 		for resp := range watchKey {
+			log.Println("Found something")
 			for _, item := range resp.Events {
+				log.Println("Found item", item)
 				// get our values as strings so that we can work with them
 				eventType := item.Type.String()
 				key := string(item.Kv.Key)

@@ -49,6 +49,7 @@ func main() {
 	}
 
 	// get service urls
+	app.getServiceURLs()
 
 	// watch service urls
 	go app.watchEtcd()
