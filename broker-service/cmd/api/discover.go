@@ -63,10 +63,27 @@ func (app *Config) GetServiceURL(serviceType string) (string, error) {
 
 	// TODO - get service URL from etcd
 	switch serviceType {
-
+	case "mail:":
+		serviceURL = getUrlFromMap(app.MailServiceURLs)
+	case "logger":
+		serviceURL = getUrlFromMap(app.LogServiceURLs)
+	case "auth":
+		serviceURL = getUrlFromMap(app.AuthServiceURLs)
 	}
 
 	return serviceURL, nil
+}
+
+// getUrlFromMap returns a random value from available urls in
+// service maps. Since maps are never guaranteed to be in the same order,
+// grabbing the first value is sufficient for our  purposes.
+func getUrlFromMap(m map[string]string) string {
+	var u string
+	for k, _ := range m {
+		u = k
+		break
+	}
+	return u
 }
 
 // connectToRabbit tries to connect to etcd, for up to 30 seconds
