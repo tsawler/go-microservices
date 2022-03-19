@@ -17,7 +17,7 @@ func (app *Config) watchEtcd() {
 		watchKey := app.Etcd.Watch(context.Background(), "/mail/", clientv3.WithPrefix())
 		for resp := range watchKey {
 			for _, item := range resp.Events {
-				// get our values as strings so we can work with them
+				// get our values as strings so that we can work with them
 				eventType := item.Type.String()
 				key := string(item.Kv.Key)
 				value := string(item.Kv.Value)
