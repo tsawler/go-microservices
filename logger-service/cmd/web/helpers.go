@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,6 +12,8 @@ import (
 	"runtime/debug"
 	"time"
 )
+
+const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321_+"
 
 type jsonResponse struct {
 	Error   bool   `json:"error"`
@@ -103,4 +106,15 @@ func (app *Config) logEvent(name, content string) error {
 		CreatedAt: time.Now(),
 	}
 	return app.Models.LogEntry.Insert(event)
+}
+
+// randomString returns a random string of letters of length n
+func (app *Config) randomString(n int) string {
+	s, r := make([]rune, n), []rune(randomStringSource)
+	for i := range s {
+		p, _ := rand.Prime(rand.Reader, len(r))
+		x, y := p.Uint64(), uint64(len(r))
+		s[i] = r[x%y]
+	}
+	return string(s)
 }

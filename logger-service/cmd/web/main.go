@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -25,6 +26,7 @@ const (
 type Config struct {
 	Session *scs.SessionManager
 	Models  data.Models
+	Etcd    *clientv3.Client
 }
 
 func main() {
@@ -55,6 +57,10 @@ func main() {
 		Session: session,
 		Models:  data.New(client),
 	}
+
+	// connect to etcd and register service
+	app.registerService()
+	defer app.Etcd.Close()
 
 	// Start webserver in its own GoRoutine, passing it our app variable.
 	go serve(app)
