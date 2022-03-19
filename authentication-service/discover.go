@@ -22,7 +22,7 @@ func (app *Config) registerService() {
 	}
 
 	// insert something with the lease
-	_, err = kv.Put(context.TODO(), "/auth/1", "authentication-service", clientv3.WithLease(grantResp.ID))
+	_, err = kv.Put(context.TODO(), fmt.Sprintf("/auth/%s", app.randomString(10)), "authentication-service", clientv3.WithLease(grantResp.ID))
 	if err != nil {
 		log.Println("Error inserting using lease", err)
 	}

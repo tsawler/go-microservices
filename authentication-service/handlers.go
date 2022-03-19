@@ -6,28 +6,29 @@ import (
 	"net/http"
 )
 
+// Authenticate accepts a json payload and attempts to authenticate a user
 func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
-	err := readJSON(w, r, &requestPayload)
+	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	// validate against database
 	user, err := app.Models.User.GetByEmail(requestPayload.Email)
 	if err != nil {
-		_ = errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
+		_ = app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 
 	valid, err := user.PasswordMatches(requestPayload.Password)
 	if err != nil || !valid {
-		_ = errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
+		_ = app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	}
 
@@ -44,5 +45,5 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Data: user,
 	}
 
-	_ = writeJSON(w, http.StatusAccepted, payload)
+	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }

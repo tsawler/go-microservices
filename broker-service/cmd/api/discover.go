@@ -24,8 +24,8 @@ func (app *Config) getServiceURLs() {
 		}
 
 		for _, k := range getResp.Kvs {
-			log.Println("Key", string(k.Key))
-			log.Println("Adding", string(k.Value), "to", curPrefix, "service map")
+			//log.Println("Key", string(k.Key))
+			//log.Println("Adding", string(k.Value), "to", curPrefix, "service map")
 			switch curPrefix {
 			case "/mail/":
 				app.MailServiceURLs[string(k.Value)] = ""
@@ -109,10 +109,10 @@ func (app *Config) GetServiceURL(serviceType string) string {
 
 // getUrlFromMap returns a random value from available urls in
 // service maps. Since maps are never guaranteed to be in the same order,
-// grabbing the first value is sufficient for our  purposes.
+// grabbing the first value is sufficient for our purposes.
 func getUrlFromMap(m map[string]string) string {
 	var u string
-	for k, _ := range m {
+	for k := range m {
 		log.Println("Going through map")
 		u = k
 		break

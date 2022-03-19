@@ -16,6 +16,14 @@ type Payload struct {
 	Data any    `json:"data"`
 }
 
+// MailMessagePayload is the type for JSON describing a message to be sent
+type MailMessagePayload struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
+
 // Broker is a simple test handler for the broker
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	err := app.pushToQueue("broker_hit", r.RemoteAddr)
@@ -43,7 +51,7 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// read posted json into our variable
-	_ = readJSON(w, r, &requestPayload)
+	_ = app.readJSON(w, r, &requestPayload)
 
 	// create json we'll send to the authentication-service
 	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
@@ -61,17 +69,17 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	defer response.Body.Close()
 
 	// make sure we get back the right status code
 	if response.StatusCode == http.StatusUnauthorized {
-		_ = errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
+		_ = app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
 	} else if response.StatusCode != http.StatusAccepted {
-		_ = errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
+		_ = app.errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
 		return
 	}
 
@@ -81,13 +89,13 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	// decode the json we get from the authentication-service into our variable
 	err = json.NewDecoder(response.Body).Decode(&jsonFromService)
 	if err != nil {
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	if jsonFromService.Error {
 		// invalid login
-		_ = errorJSON(w, err, http.StatusUnauthorized)
+		_ = app.errorJSON(w, err, http.StatusUnauthorized)
 		_ = app.pushToQueue("authentication", fmt.Sprintf("invalid login for %s", requestPayload.Email))
 		return
 	}
@@ -101,24 +109,13 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	payload.Message = "Authenticated!"
 	payload.Data = jsonFromService.Data
 
-	out, _ := json.MarshalIndent(payload, "", "\t")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	_, _ = w.Write(out)
-}
-
-// MailMessagePayload is the type for JSON describing a message to be sent
-type MailMessagePayload struct {
-	From    string `json:"from"`
-	To      string `json:"to"`
-	Subject string `json:"subject"`
-	Message string `json:"message"`
+	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // SendMailMessage sends a mail message which is received as JSON
 func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
 	var msg MailMessagePayload
-	_ = readJSON(w, r, &msg)
+	_ = app.readJSON(w, r, &msg)
 
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
@@ -134,14 +131,14 @@ func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
-		_ = errorJSON(w, err, http.StatusBadRequest)
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 	defer response.Body.Close()
 
 	// make sure we get back the right status code
 	if response.StatusCode != http.StatusAccepted {
-		_ = errorJSON(w, errors.New("error calling mail service"), http.StatusBadRequest)
+		_ = app.errorJSON(w, errors.New("error calling mail service"), http.StatusBadRequest)
 		return
 	}
 
