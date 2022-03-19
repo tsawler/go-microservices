@@ -9,6 +9,10 @@ consists of a number of loosely coupled microservices, all written in Go:
 - queue-listener-service: consumes messages from amqp (RabbitMQ) and initiates actions based on payload
 - mail-service: sends email (accepts JSON)
 
+All services (except the broker) register their access urls with etcd, and renew their leases automatically.
+This allows us to implement a simple service discovery system, where all service URLs are accessible with
+"service maps" in the Config type used to share application configuration in the broker service.
+
 In addition to those services, the included `docker-compose.yml` at the root level of the project
 starts the following services:
 
