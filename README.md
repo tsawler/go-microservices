@@ -27,8 +27,10 @@ From the root level of the project, execute this command (this assumes that you 
 of [Docker](https://www.docker.com/products/docker-desktop) installed on your machine):
 
 ~~~
-make up
+make up_build 
 ~~~
+
+If the code has not changed, subsequent runs can just be `make up`.
 
 Then start the front end:
 
