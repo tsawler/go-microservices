@@ -63,7 +63,7 @@ func (app *Config) watchEtcd() {
 func (app *Config) GetServiceURL(serviceType string) (string, error) {
 	var serviceURL string
 
-	// TODO - get service URL from etcd
+	// get service URL from etcd
 	switch serviceType {
 	case "mail:":
 		serviceURL = getUrlFromMap(app.MailServiceURLs)
