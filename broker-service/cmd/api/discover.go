@@ -17,6 +17,7 @@ func (app *Config) getServiceURLs() {
 
 	prefixes := []string{"/mail/", "/logger/", "/auth/"}
 
+	// range through all the services we want to discover
 	for _, curPrefix := range prefixes {
 		getResp, err := kv.Get(context.TODO(), curPrefix, clientv3.WithPrefix())
 		if err != nil {
@@ -25,7 +26,7 @@ func (app *Config) getServiceURLs() {
 
 		for _, k := range getResp.Kvs {
 			//log.Println("Key", string(k.Key))
-			//log.Println("Adding", string(k.Value), "to", curPrefix, "service map")
+			log.Println("Adding", string(k.Value), "to", curPrefix, "service map; key was", string(k.Key))
 			switch curPrefix {
 			case "/mail/":
 				app.MailServiceURLs[string(k.Value)] = ""

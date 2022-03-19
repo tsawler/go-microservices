@@ -22,7 +22,6 @@ type Config struct {
 }
 
 func main() {
-
 	log.Println("--------------------------")
 	log.Println("Starting broker-service...")
 
@@ -32,7 +31,6 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
 	defer rabbitConn.Close()
 
 	// don't continue until etcd is ready
