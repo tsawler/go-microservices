@@ -7,10 +7,9 @@
                 <h1 class="mt-5">Test microservices</h1>
                 <hr>
                 <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test broker</a>
-                <a id="authBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth direct</a>
-                <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth via broker</a>
-                <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Send email via broker</a>
-                <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Write to log</a>
+                <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test auth</a>
+                <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test email</a>
+                <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0)">Test log</a>
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
                 </div>
@@ -37,14 +36,13 @@
     <script>
         let brokerBtn = document.getElementById("brokerBtn");
         let authBrokerBtn = document.getElementById("authBrokerBtn");
-        let authBtn = document.getElementById("authBtn");
         let output = document.getElementById("output");
         let mailBtn = document.getElementById("mailBtn");
         let logBtn = document.getElementById("logBtn");
         let sent = document.getElementById("payload")
         let received = document.getElementById("received")
 
-        brokerBtn.addEventListener("click", function() {
+        brokerBtn.addEventListener("click", function () {
             started();
 
             const body = {
@@ -64,19 +62,21 @@
                     }
                     ended();
                 })
-                .catch((error) =>{
+                .catch((error) => {
                     output.innerHTML += "<br><br><strong>Error: " + error;
                 })
         })
 
-        mailBtn.addEventListener("click", function() {
+        mailBtn.addEventListener("click", function () {
             started();
-
             const payload = {
-                from: "me@here.com",
-                to: "you@there.com",
-                subject: "Test Email",
-                message: "Hello, world! This is my test message."
+                action: "mail",
+                mail: {
+                    from: "me@here.com",
+                    to: "you@there.com",
+                    subject: "Test Email",
+                    message: "Hello, world! This is my test message."
+                }
             }
 
             const headers = new Headers();
@@ -89,7 +89,7 @@
             }
 
             // send request to main entrypoint for microservices
-            fetch("http:\/\/localhost:8080/mail", body)
+            fetch("http:\/\/localhost:8080/handle", body)
                 .then((response) => response.json())
                 .then((data) => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);
@@ -102,52 +102,20 @@
                     }
                     ended();
                 })
-                .catch((error) =>{
+                .catch((error) => {
                     output.innerHTML += "<br><br><strong>Error: " + error;
                 })
         })
 
-        authBtn.addEventListener("click", function() {
+        authBrokerBtn.addEventListener("click", function () {
             started();
 
             const payload = {
-                email: "trevor.sawler@gmail.com",
-                password: "verysecret",
-            }
-
-            const headers = new Headers();
-            headers.append("Content-Type", "application/json");
-
-            const body = {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                headers: headers,
-            }
-
-            fetch("http:\/\/localhost:8081/authenticate", body)
-            .then(response => response.json())
-            .then(data => {
-                sent.innerHTML = JSON.stringify(payload, undefined, 4);
-                received.innerHTML = JSON.stringify(data, undefined, 4);
-                if (data.error) {
-                    output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
-
-                } else {
-                    output.innerHTML += `<br><strong>Response from auth service:</strong> ${data.message}`;
+                action: "auth",
+                auth: {
+                    email: "trevor.sawler@gmail.com",
+                    password: "verysecret",
                 }
-                ended();
-            })
-            .catch(error => {
-                output.innerHTML += "<br><br><strong>Error: " + error;
-            })
-        })
-
-        authBrokerBtn.addEventListener("click", function() {
-            started();
-
-            const payload = {
-                email: "trevor.sawler@gmail.com",
-                password: "verysecret",
             }
 
             const headers = new Headers();
@@ -159,7 +127,7 @@
                 headers: headers,
             }
 
-            fetch("http:\/\/localhost:8080/authenticate", body)
+            fetch("http:\/\/localhost:8080/handle", body)
                 .then(response => response.json())
                 .then(data => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);
@@ -177,12 +145,15 @@
                 })
         })
 
-        logBtn.addEventListener("click", function() {
+        logBtn.addEventListener("click", function () {
             started();
 
             const payload = {
-                name: "event",
-                data: "Some kind of data",
+                action: "log",
+                log: {
+                    name: "event",
+                    data: "Some kind of data",
+                }
             }
 
             const headers = new Headers();
@@ -194,7 +165,7 @@
                 headers: headers,
             }
 
-            fetch(`http://localhost:8082/api/log`, body)
+            fetch(`http://localhost:8080/handle`, body)
                 .then(response => response.json())
                 .then(data => {
                     sent.innerHTML = JSON.stringify(payload, undefined, 4);

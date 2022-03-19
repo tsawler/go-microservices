@@ -16,8 +16,25 @@ type Payload struct {
 	Data any    `json:"data"`
 }
 
-// MailMessagePayload is the type for JSON describing a message to be sent
-type MailMessagePayload struct {
+type RequestPayload struct {
+	Action string      `json:"action"`
+	Mail   MailPayload `json:"mail,omitempty"`
+	Auth   AuthPayload `json:"auth,omitempty"`
+	Log    LogPayload  `json:"log,omitempty"`
+}
+
+type AuthPayload struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LogPayload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
+}
+
+// MailPayload is the type for JSON describing a message to be sent
+type MailPayload struct {
 	From    string `json:"from"`
 	To      string `json:"to"`
 	Subject string `json:"subject"`
@@ -40,21 +57,70 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(out)
 }
 
-// BrokerAuth is the handler to authenticate using the authentication-service.
-// We receive user credentials as JSON, and then post that JSON to the authentication-service
-// to try to authenticate.
-func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
-	// create a variable matching the structure of the JSON we expect from the front end
-	var requestPayload struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+// HandleSubmission handles a JSON payload that describes an action to take,
+// processes it, and sends it where it needs to go
+func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
+	var requestPayload RequestPayload
+
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		_ = app.errorJSON(w, err)
+		return
 	}
 
-	// read posted json into our variable
-	_ = app.readJSON(w, r, &requestPayload)
+	switch requestPayload.Action {
+	case "mail":
+		app.sendMail(w, requestPayload.Mail)
+	case "auth":
+		app.authenticate(w, requestPayload.Auth)
+	case "log":
+		app.logItem(w, requestPayload.Log)
+	default:
+		_ = app.errorJSON(w, errors.New("unknown action"))
+	}
+}
 
+func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
+	jsonData, _ := json.MarshalIndent(msg, "", "\t")
+
+	// call the mail-service; we need a request, so let's build one, and populate
+	// its body with the jsonData we just created. First we get the correct server
+	// to call from our service map.
+	mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
+
+	// now post to the mail service
+	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	defer response.Body.Close()
+
+	// make sure we get back the right status code
+	if response.StatusCode != http.StatusAccepted {
+		_ = app.errorJSON(w, errors.New("error calling mail service"), http.StatusBadRequest)
+		return
+	}
+
+	// send json back to our end user
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Message sent to " + msg.To
+
+	out, _ := json.MarshalIndent(payload, "", "\t")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	_, _ = w.Write(out)
+
+}
+
+func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	// create json we'll send to the authentication-service
-	jsonData, _ := json.MarshalIndent(requestPayload, "", "\t")
+	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	// call the authentication-service; we need a request, so let's build one, and populate
 	// its body with the jsonData we just created. First we get the correct url for our
@@ -96,12 +162,12 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	if jsonFromService.Error {
 		// invalid login
 		_ = app.errorJSON(w, err, http.StatusUnauthorized)
-		_ = app.pushToQueue("authentication", fmt.Sprintf("invalid login for %s", requestPayload.Email))
+		_ = app.pushToQueue("authentication", fmt.Sprintf("invalid login for %s", a.Email))
 		return
 	}
 
 	// log action
-	_ = app.pushToQueue("authentication", fmt.Sprintf("valid login for %s", requestPayload.Email))
+	_ = app.pushToQueue("authentication", fmt.Sprintf("valid login for %s", a.Email))
 
 	// send json back to our end user
 	var payload jsonResponse
@@ -112,52 +178,18 @@ func (app *Config) BrokerAuth(w http.ResponseWriter, r *http.Request) {
 	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }
 
-// SendMailMessage sends a mail message which is received as JSON
-func (app *Config) SendMailMessage(w http.ResponseWriter, r *http.Request) {
-	var msg MailMessagePayload
-	_ = app.readJSON(w, r, &msg)
-
-	jsonData, _ := json.MarshalIndent(msg, "", "\t")
-
-	// call the mail-service; we need a request, so let's build one, and populate
-	// its body with the jsonData we just created. First we get the correct server
-	// to call from our service map.
-	mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
-
-	// now post to the mail service
-	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
-	request.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	response, err := client.Do(request)
+func (app *Config) logItem(w http.ResponseWriter, l LogPayload) {
+	err := app.pushToQueue(l.Name, l.Data)
 	if err != nil {
-		_ = app.errorJSON(w, err, http.StatusBadRequest)
-		return
-	}
-	defer response.Body.Close()
-
-	// make sure we get back the right status code
-	if response.StatusCode != http.StatusAccepted {
-		_ = app.errorJSON(w, errors.New("error calling mail service"), http.StatusBadRequest)
-		return
+		_ = app.errorJSON(w, err)
 	}
 
 	// send json back to our end user
 	var payload jsonResponse
 	payload.Error = false
-	payload.Message = "Message sent to " + msg.To
+	payload.Message = "logged"
 
-	out, _ := json.MarshalIndent(payload, "", "\t")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	_, _ = w.Write(out)
-
-}
-
-// HandleSubmission handles a JSON payload that describes an action to take,
-// processes it, and sends it where it needs to go
-func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
-	// TODO - handle log, mail, auth,
+	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 // pushToQueue pushes a message into RabbitMQ
