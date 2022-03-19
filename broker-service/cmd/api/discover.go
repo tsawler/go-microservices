@@ -31,8 +31,10 @@ func (app *Config) watchEtcd() {
 				case strings.HasPrefix(key, "mail"):
 					// mail
 					if deleteURL {
+						log.Println("Removing", value, "from mail service map")
 						delete(app.MailServiceURLs, key)
 					} else {
+						log.Println("Adding", value, "to mail service map")
 						app.MailServiceURLs[value] = ""
 					}
 
