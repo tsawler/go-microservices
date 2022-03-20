@@ -36,6 +36,12 @@ func (app *Config) registerService() {
 }
 
 func (app *Config) keepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Error", fmt.Sprintf("%v", r))
+		}
+	}()
+
 	for {
 		ka := <-kalRes
 		log.Println("ttl:", ka.TTL)
