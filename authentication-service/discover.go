@@ -35,6 +35,7 @@ func (app *Config) registerService() {
 	go app.listenToKeepAlive(kalRes)
 }
 
+// listenToKeepAlive just consumes channel responses from etcd's KeepAlive method
 func (app *Config) listenToKeepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
 	defer func() {
 		if r := recover(); r != nil {
