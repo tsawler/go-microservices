@@ -25,6 +25,7 @@ func main() {
 
 	log.Println("--------------------------------")
 	log.Println("Starting mail-service on port", webPort)
+
 	// define a server that listens on port 80 and uses our routes()
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
