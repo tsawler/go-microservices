@@ -90,7 +90,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
-	// call the mail-service; we need a request, so let's build one, and populate
+	// call the mail service; we need a request, so let's build one, and populate
 	// its body with the jsonData we just created. First we get the correct server
 	// to call from our service map.
 	mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
