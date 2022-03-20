@@ -84,6 +84,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// sendMail sends an email through the mail-service. It receives a json payload
+// of type requestPayload, with MailPayload embedded.
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
@@ -122,6 +124,8 @@ func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 
 }
 
+// authenticate tries to log a user in through the authentication-service. It receives a json payload
+// of type requestPayload, with AuthPayload embedded.
 func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	// create json we'll send to the authentication-service
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
@@ -182,6 +186,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	_ = app.writeJSON(w, http.StatusAccepted, payload)
 }
 
+// logItem logs an event using the logger-service. It makes the call by pushing the data to RabbitMQ.
 func (app *Config) logItem(w http.ResponseWriter, l LogPayload) {
 	err := app.pushToQueue(l.Name, l.Data)
 	if err != nil {
