@@ -19,7 +19,9 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Date</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Update</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -29,11 +31,13 @@
                                 <td><a href="/admin/log-entry/{{.ID}}">{{.ID}}</a></td>
                                 <td>{{.Name}}</td>
                                 <td>{{.CreatedAt.Format "2006-01-02 03:04:05"}} UTC</td>
+                                <td>{{.UpdatedAt.Format "2006-01-02 03:04:05"}} UTC</td>
+                                <td><a href="/admin/update/{{.ID}}">Update timestamp</a></td>
                             </tr>
                         {{end}}
                     {{else}}
                         <tr>
-                            <td colspan="3">No entries</td>
+                            <td colspan="5">No entries</td>
                         </tr>
                     {{end}}
                     </tbody>

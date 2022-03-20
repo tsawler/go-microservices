@@ -207,3 +207,26 @@ func (app *Config) DeleteAll(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
 }
+
+// UpdateTimeStamp just demos how to update a document
+func (app *Config) UpdateTimeStamp(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	entry, err := app.Models.LogEntry.GetOne(id)
+	if err != nil {
+		log.Println("Error getting record:", err)
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	res, err := entry.Update()
+	if err != nil {
+		log.Println("Error updating", err)
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	log.Println("Result in handler:", res.ModifiedCount)
+
+	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+}

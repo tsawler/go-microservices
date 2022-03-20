@@ -39,6 +39,7 @@ type LogEntry struct {
 	Name      string    `bson:"name" json:"name"`
 	Data      string    `bson:"data" json:"data"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
 
 // Insert puts a document in the logs collection.
@@ -49,6 +50,7 @@ func (l *LogEntry) Insert(entry LogEntry) error {
 		Name:      entry.Name,
 		Data:      entry.Data,
 		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	})
 	if err != nil {
 		log.Println("Error inserting log entry:", err)
@@ -127,4 +129,37 @@ func (l *LogEntry) DropCollection() error {
 	}
 
 	return nil
+}
+
+// Update updates on record, by id
+func (l *LogEntry) Update() (*mongo.UpdateResult, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	docID, err := primitive.ObjectIDFromHex(l.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Matching", l.ID)
+	collection := client.Database("logs").Collection("logs")
+
+	result, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": docID},
+		bson.D{
+			{"$set", bson.D{
+				{"name", l.Name},
+				{"data", l.Data},
+				{"updated_at", time.Now()},
+			}},
+		},
+	)
+	log.Println("Matched:", result.MatchedCount)
+	log.Println("Modified:", result.ModifiedCount)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

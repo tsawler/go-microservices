@@ -51,6 +51,7 @@ func (app *Config) webRouter() http.Handler {
 		mux.Get("/dashboard", app.Dashboard)
 		mux.Get("/log-entry/{id}", app.DisplayOne)
 		mux.Get("/delete-all", app.DeleteAll)
+		mux.Get("/update/{id}", app.UpdateTimeStamp)
 	})
 
 	return mux
