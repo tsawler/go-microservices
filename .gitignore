@@ -2,3 +2,8 @@
 coverage.out
 frontApp
 logs/*
+logServiceApp
+mailerServiceApp
+authApp
+brokerApp
+listener
