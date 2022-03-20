@@ -17,7 +17,8 @@ type Payload struct {
 }
 
 // RequestPayload is the type describing the data that we received
-// from the user's browser
+// from the user's browser. We embed a custom type for each of the
+// possible payloads (mail, auth, and log).
 type RequestPayload struct {
 	Action string      `json:"action"`
 	Mail   MailPayload `json:"mail,omitempty"`
