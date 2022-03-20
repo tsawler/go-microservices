@@ -16,6 +16,8 @@ type Payload struct {
 	Data any    `json:"data"`
 }
 
+// RequestPayload is the type describing the data that we received
+// from the user's browser
 type RequestPayload struct {
 	Action string      `json:"action"`
 	Mail   MailPayload `json:"mail,omitempty"`
@@ -23,17 +25,19 @@ type RequestPayload struct {
 	Log    LogPayload  `json:"log,omitempty"`
 }
 
+// AuthPayload is the type embedded in RequestPayload for auth
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
+// LogPayload is the type embedded in RequestPayload for logging
 type LogPayload struct {
 	Name string `json:"name"`
 	Data string `json:"data"`
 }
 
-// MailPayload is the type for JSON describing a message to be sent
+// MailPayload is the type embedded in RequestPayload for sending email
 type MailPayload struct {
 	From    string `json:"from"`
 	To      string `json:"to"`
