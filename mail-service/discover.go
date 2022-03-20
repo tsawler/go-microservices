@@ -32,10 +32,10 @@ func (app *Config) registerService() {
 	if err != nil {
 		log.Println("Error with keepalive", err)
 	}
-	go app.keepAlive(kalRes)
+	go app.listenToKeepAlive(kalRes)
 }
 
-func (app *Config) keepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
+func (app *Config) listenToKeepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Println("Error", fmt.Sprintf("%v", r))
@@ -43,8 +43,7 @@ func (app *Config) keepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
 	}()
 
 	for {
-		ka := <-kalRes
-		log.Println("ttl:", ka.TTL)
+		_ = <-kalRes
 	}
 }
 
