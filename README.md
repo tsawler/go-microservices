@@ -53,17 +53,22 @@ All make commands:
 ~~~
 tcs@Grendel go-microservices % make help
  Choose a command:
-  up         starts all containers in the background without forcing build
-  up_build   stops docker-compose (if running), builds all projects and starts docker compose
-  auth       stops authentication-service, removes docker image, builds service, and starts it
-  broker     stops broker-service, removes docker image, builds service, and starts it
-  logger     stops logger-service, removes docker image, builds service, and starts it
-  mail       stops mail-service, removes docker image, builds service, and starts it
-  listener   stops listener-service, removes docker image, builds service, and starts it
-  down       stop docker compose
-  start      starts the front end
-  stop       stop the front end
-  test       runs all tests
-  clean      runs go clean and deletes binaries
-  help       displays help
+  up               starts all containers in the background without forcing build
+  down             stop docker compose
+  build_auth       builds the authentication binary as a linux executable
+  build_logger     builds the logger binary as a linux executable
+  build_broker     builds the broker binary as a linux executable
+  build_listener   builds the listener binary as a linux executable
+  build_mail       builds the mail binary as a linux executable
+  up_build         stops docker-compose (if running), builds all projects and starts docker compose
+  auth             stops authentication-service, removes docker image, builds service, and starts it
+  broker           stops broker-service, removes docker image, builds service, and starts it
+  logger           stops logger-service, removes docker image, builds service, and starts it
+  mail             stops mail-service, removes docker image, builds service, and starts it
+  listener         stops listener-service, removes docker image, builds service, and starts it
+  start            starts the front end
+  stop             stop the front end
+  test             runs all tests
+  clean            runs go clean and deletes binaries
+  help             displays help
 ~~~

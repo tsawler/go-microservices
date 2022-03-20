@@ -11,30 +11,41 @@ up:
 	docker-compose up -d
 	@echo "Docker images started!"
 
+## down: stop docker compose
+down:
+	@echo "Stopping docker images..."
+	docker-compose down
+	@echo "Docker stopped!"
+
 ## build_auth: builds the authentication binary as a linux executable
 build_auth:
+	@echo "Building authentication binary.."
 	cd authentication-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${AUTH_BINARY} .
-	@echo "authentication-service built!"
+	@echo "Authentication binary built!"
 
 ## build_logger: builds the logger binary as a linux executable
 build_logger:
+	@echo "Building logger binary..."
 	cd logger-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${LOGGER_BINARY} ./cmd/web
-	@echo "authentication-service built!"
+	@echo "Logger binary built!"
 
 ## build_broker: builds the broker binary as a linux executable
 build_broker:
+	@echo "Building broker binary..."
 	cd broker-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${BROKER_BINARY} ./cmd/api
-	@echo "authentication-service built!"
+	@echo "Broker binary built!"
 
 ## build_listener: builds the listener binary as a linux executable
 build_listener:
+	@echo "Building listener binary..."
 	cd listener-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${LISTENER_BINARY} .
-	@echo "authentication-service built!"
+	@echo "Listener binary built!"
 
 ## build_mail: builds the mail binary as a linux executable
 build_mail:
+	@echo "Building mailer binary..."
 	cd mail-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${MAIL_BINARY} .
-	@echo "authentication-service built!"
+	@echo "Mailer binary built!"
 
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
@@ -46,60 +57,49 @@ up_build: build_auth build_broker build_listener build_logger build_mail
 	@echo "Docker images built and started!"
 
 ## auth: stops authentication-service, removes docker image, builds service, and starts it
-auth:
+auth: build_auth
 	@echo "Building authentication-service docker image..."
 	- docker-compose stop authentication-service
 	- docker-compose rm -f authentication-service
-	cd authentication-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o authApp .
 	docker-compose up --build -d authentication-service
 	docker-compose start authentication-service
 	@echo "authentication-service built and started!"
 
 ## broker: stops broker-service, removes docker image, builds service, and starts it
-broker:
+broker: build_broker
 	@echo "Building broker-service docker image..."
 	- docker-compose stop broker-service
 	- docker-compose rm -f broker-service
-	cd broker-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o brokerApp ./cmd/api
 	docker-compose up --build -d broker-service
 	docker-compose start broker-service
 	@echo "broker-service rebuilt and started!"
 
 ## logger: stops logger-service, removes docker image, builds service, and starts it
-logger:
+logger: build_logger
 	@echo "Building logger-service docker image..."
 	- docker-compose stop logger-service
 	- docker-compose rm -f logger-service
-	cd logger-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o logServiceApp ./cmd/web
 	docker-compose up --build -d logger-service
 	docker-compose start logger-service
 	@echo "broker-service rebuilt and started!"
 
 ## mail: stops mail-service, removes docker image, builds service, and starts it
-mail:
+mail: build_mail
 	@echo "Building mail-service docker image..."
 	- docker-compose stop mail-service
 	- docker-compose rm -f mail-service
-	cd mail-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o mailerServiceApp .
 	docker-compose up --build -d mail-service
 	docker-compose start mail-service
 	@echo "mail-service rebuilt and started!"
 
 ## listener: stops listener-service, removes docker image, builds service, and starts it
-listener:
+listener: build_listener
 	@echo "Building listener-service docker image..."
 	- docker-compose stop listener-service
 	- docker-compose rm -f listener-service
-	cd listener-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o listener .
 	docker-compose up --build -d listener-service
 	docker-compose start listener-service
 	@echo "listener-service rebuilt and started!"
-
-## down: stop docker compose
-down:
-	@echo "Stopping docker images..."
-	docker-compose down
-	@echo "Docker stopped!"
 
 ## start: starts the front end
 start:

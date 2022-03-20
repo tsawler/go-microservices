@@ -76,7 +76,6 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    restart: always
     deploy:
       mode: replicated
       replicas: 1
@@ -89,7 +88,6 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
-    restart: always
     deploy:
       mode: replicated
       replicas: 1
@@ -99,7 +97,7 @@ services:
     image: 'mongo:4.2.17-bionic'
     ports:
       - "27017:27017"
-    restart: always
+#    restart: always
     deploy:
       mode: replicated
       replicas: 1
