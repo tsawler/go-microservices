@@ -26,6 +26,7 @@ type Config struct {
 func main() {
 	log.Println("--------------------------")
 	log.Println("Starting broker-service...")
+	log.Println("--------------------------")
 
 	// don't continue until rabbitmq is ready
 	rabbitConn, err := connectToRabbit()
