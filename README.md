@@ -39,7 +39,9 @@ make start
 ~~~
 
 
-Hit the front end with your web browser at `http://localhost:80`
+Hit the front end with your web browser at `http://localhost:80`. You can also access a web 
+front end to the logger service by going to `http://localhost:8082` (or whatever port you
+specify in the `docker-compose.yml file`).
 
 To stop everything:
 
