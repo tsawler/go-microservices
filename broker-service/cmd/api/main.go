@@ -24,7 +24,7 @@ type Config struct {
 }
 
 func main() {
-	log.Printf("Starting broker-service on %s...", time.Now().Format("2006-01-02 03:04:05"))
+	log.Printf("Starting broker-service on %s...", time.Now().Format("2006-01-02 03:04:05PM"))
 
 	// don't continue until rabbitmq is ready
 	rabbitConn, err := connectToRabbit()
@@ -92,6 +92,6 @@ func connectToRabbit() (*amqp.Connection, error) {
 		time.Sleep(2 * time.Second)
 		continue
 	}
-	log.Println("Connected to RabbitMQ!")
+	fmt.Println("Connected to RabbitMQ!")
 	return rabbitConn, nil
 }
