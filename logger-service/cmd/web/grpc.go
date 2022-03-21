@@ -10,6 +10,8 @@ import (
 	"net"
 )
 
+// LogServer is type used for writing to the log via gRPC. Note that we embed the
+// data.Models type, so we have access to Mongo.
 type LogServer struct {
 	logs.UnimplementedLogServiceServer
 	Models data.Models
