@@ -175,17 +175,19 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		return
 	}
 
+	// did not authenticate successfully
 	if jsonFromService.Error {
-		// invalid login
-		_ = app.errorJSON(w, err, http.StatusUnauthorized)
+		// log it
 		_ = app.pushToQueue("authentication", fmt.Sprintf("invalid login for %s", a.Email))
+		// send error JSON back
+		_ = app.errorJSON(w, err, http.StatusUnauthorized)
 		return
 	}
 
-	// log action
+	// valid login, so send it to the logger service via RabbitMQ
 	_ = app.pushToQueue("authentication", fmt.Sprintf("valid login for %s", a.Email))
 
-	// send json back to our end user
+	// send json back to our end user, with user info embedded
 	var payload jsonResponse
 	payload.Error = false
 	payload.Message = "Authenticated!"
