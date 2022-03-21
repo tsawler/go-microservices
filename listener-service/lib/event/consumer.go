@@ -83,7 +83,7 @@ func (consumer *Consumer) Listen(topics []string) error {
 			var payload Payload
 			_ = json.Unmarshal(d.Body, &payload)
 
-			// Do something with the payload
+			// do something with the payload
 			go handlePayload(payload)
 		}
 	}()
