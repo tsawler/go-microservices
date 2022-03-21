@@ -13,7 +13,7 @@ All services (except the broker) register their access urls with etcd, and renew
 This allows us to implement a simple service discovery system, where all service URLs are accessible with
 "service maps" in the Config type used to share application configuration in the broker service.
 
-In addition to those services, the included `docker-compose.yml` at the root level of the project
+In addition to the microservices, the included `docker-compose.yml` at the root level of the project
 starts the following services:
 
 - Postgresql - used by the authentication service to store user accounts
