@@ -34,6 +34,7 @@ func (l *LogServer) WriteLog(ctx context.Context, req *logs.LogRequest) (*logs.L
 		return res, err
 	}
 
+	// return response
 	res := &logs.LogResponse{Result: "logged!"}
 
 	return res, nil
