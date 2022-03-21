@@ -16,10 +16,10 @@ This allows us to implement a simple service discovery system, where all service
 In addition to those services, the included `docker-compose.yml` at the root level of the project
 starts the following services:
 
-- Postgresql 14
-- mailhog
-- MongoDB
-- etcd
+- Postgresql - used by the authentication service to store user accounts
+- MongoDB - used by the logger service to save logs from all services
+- etcd - used for service discovery
+- mailhog - used as a fake mail server to work with the mail service
 
 ## Running the project
 From the root level of the project, execute this command (this assumes that you have 
