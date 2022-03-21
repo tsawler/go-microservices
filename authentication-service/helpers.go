@@ -10,6 +10,7 @@ import (
 
 const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321_+"
 
+// jsonResponse is the type used for sending JSON around
 type jsonResponse struct {
 	Error   bool   `json:"error"`
 	Message string `json:"message"`
