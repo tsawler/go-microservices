@@ -198,6 +198,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 func (app *Config) logItem(w http.ResponseWriter, l LogPayload) {
 	err := app.pushToQueue(l.Name, l.Data)
 	if err != nil {
+		log.Println(err)
 		_ = app.errorJSON(w, err)
 	}
 
