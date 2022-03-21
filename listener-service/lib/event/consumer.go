@@ -43,7 +43,7 @@ type Payload struct {
 	Data string `json:"data"`
 }
 
-// Listen will listen for all new Queue publications
+// Listen will listen for all new queue publications
 func (consumer *Consumer) Listen(topics []string) error {
 	ch, err := consumer.conn.Channel()
 	if err != nil {

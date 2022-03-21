@@ -26,11 +26,15 @@ func main() {
 	// start listening for messages
 	log.Println("----------------------------------")
 	log.Println("Listening for and consuming RabbitMQ messages...")
+
+	// create a new consumer
 	consumer, err := event.NewConsumer(rabbitConn)
 	if err != nil {
 		panic(err)
 	}
-	err = consumer.Listen(os.Args[1:])
+
+	// consumer.Listen watches the queue and consumes events for all the provided topics.
+	err = consumer.Listen([]string{"log.INFO", "log.WARNING", "log.ERROR"})
 	if err != nil {
 		log.Println(err)
 	}
