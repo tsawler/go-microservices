@@ -98,6 +98,7 @@ func handlePayload(payload Payload) {
 	// logic to process payload goes in here
 	switch payload.Name {
 	case "broker_hit":
+		// just a test to make sure everything works
 		res, err := rpcPushToLogger("LogInfo", payload)
 		if err != nil {
 			log.Println(err)
@@ -105,10 +106,14 @@ func handlePayload(payload Payload) {
 		fmt.Println("Response from RPC:", res)
 
 	case "auth", "authentication":
+		// we are trying to authenticate someone
 		err := authenticate(payload)
 		if err != nil {
 			log.Println(err)
 		}
+
+	// you can have as many cases as you want here, but naturally you'll have to write the logic
+	// to connect to a given microservice
 
 	default:
 		// log whatever we get
