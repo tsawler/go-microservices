@@ -2,7 +2,6 @@
 .vscode
 coverage.out
 frontApp
-logs/*
 logServiceApp
 mailerServiceApp
 authApp
