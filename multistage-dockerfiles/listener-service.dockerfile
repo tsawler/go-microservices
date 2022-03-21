@@ -22,4 +22,4 @@ RUN mkdir /app
 COPY --from=builder /app/listener /app
 
 # Run the server executable
-CMD [ "/app/listener", "log.INFO", "log.WARNING", "log.ERROR" ]
+CMD [ "/app/listener" ]
