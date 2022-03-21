@@ -9,7 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"log-service/data"
-	"log-service/logs"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -22,17 +21,13 @@ const (
 	webPort  = "80"
 	rpcPort  = "5001"
 	mongoURL = "mongodb://mongo:27017"
-	gRpcPort = ":50001"
+	gRpcPort = "50001"
 )
 
 type Config struct {
 	Session *scs.SessionManager
 	Models  data.Models
 	Etcd    *clientv3.Client
-}
-
-type LogServer struct {
-	logs.UnimplementedLogServiceServer
 }
 
 func main() {
@@ -68,8 +63,8 @@ func main() {
 	app.registerService()
 	defer app.Etcd.Close()
 
-	// Start webserver in its own GoRoutine, passing it our app variable.
-	go serve(app)
+	// Start webserver in its own GoRoutine
+	go app.serve()
 
 	// Start the gRPC server in its own GoRoutine
 	go app.gRPCListen()
@@ -101,7 +96,7 @@ func main() {
 }
 
 // serve starts the web server.
-func serve(app Config) {
+func (app *Config) serve() {
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
