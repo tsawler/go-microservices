@@ -5,7 +5,7 @@ consists of a number of loosely coupled microservices, all written in Go:
 
 - broker-service: an optional single entry point to connect to all services from one place (accepts JSON)
 - authentication-service: authenticates users against a Postgres database (accepts JSON)
-- logger-service: logs important events to a MongoDB database (accepts RPC and JSON)
+- logger-service: logs important events to a MongoDB database (accepts RPC, gRPC and JSON)
 - queue-listener-service: consumes messages from amqp (RabbitMQ) and initiates actions based on payload
 - mail-service: sends email (accepts JSON)
 
