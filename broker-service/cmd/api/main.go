@@ -13,6 +13,8 @@ import (
 
 const webPort = "80"
 
+// Config is the type we'll use as a receiver to share application
+// configuration around our app.
 type Config struct {
 	Rabbit          *amqp.Connection
 	Etcd            *clientv3.Client
