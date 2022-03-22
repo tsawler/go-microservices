@@ -46,9 +46,7 @@ func (app *Config) watchEtcd() {
 		// watch for service changes
 		watchKey := app.Etcd.Watch(context.Background(), "/mail/", clientv3.WithPrefix())
 		for resp := range watchKey {
-			log.Println("Found something")
 			for _, item := range resp.Events {
-				log.Println("Found item", item)
 				// get our values as strings so that we can work with them
 				eventType := item.Type.String()
 				key := string(item.Kv.Key)
