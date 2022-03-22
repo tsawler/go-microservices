@@ -23,7 +23,6 @@ func main() {
 		Mailer: createMail(),
 	}
 
-	log.Println("--------------------------------")
 	log.Println("Starting mail-service on port", webPort)
 
 	// define a server that listens on port 80 and uses our routes()
