@@ -11,20 +11,15 @@ import (
 )
 
 func main() {
-	// rabbitConn is our connection to RabbitMQ
-	var rabbitConn *amqp.Connection
-
 	// try to connect to RabbitMQ
-	c, err := connect()
+	rabbitConn, err := connect()
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
-	rabbitConn = c
 	defer rabbitConn.Close()
 
 	// start listening for messages
-	log.Println("----------------------------------")
 	log.Println("Listening for and consuming RabbitMQ messages...")
 
 	// create a new consumer
