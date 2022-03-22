@@ -26,7 +26,7 @@ func (app *Config) getServiceURLs() {
 
 		for _, k := range getResp.Kvs {
 			//log.Println("Key", string(k.Key))
-			log.Println("Adding", string(k.Value), "to", curPrefix, "service map; key was", string(k.Key))
+			//log.Println("Adding", string(k.Value), "to", curPrefix, "service map; key was", string(k.Key))
 			switch curPrefix {
 			case "/mail/":
 				app.MailServiceURLs[string(k.Value)] = ""
