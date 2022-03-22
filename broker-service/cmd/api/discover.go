@@ -112,7 +112,6 @@ func (app *Config) GetServiceURL(serviceType string) string {
 func getUrlFromMap(m map[string]string) string {
 	var u string
 	for k := range m {
-		log.Println("Going through map")
 		u = k
 		break
 	}
@@ -144,6 +143,6 @@ func connectToEtcd() (*clientv3.Client, error) {
 		time.Sleep(2 * time.Second)
 		continue
 	}
-	log.Println("Connected to etcd!")
+	fmt.Println("Connected to etcd!")
 	return cli, nil
 }
