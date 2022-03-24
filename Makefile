@@ -20,7 +20,7 @@ down:
 ## build_auth: builds the authentication binary as a linux executable
 build_auth:
 	@echo "Building authentication binary.."
-	cd authentication-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${AUTH_BINARY} .
+	cd authentication-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${AUTH_BINARY} ./cmd/api
 	@echo "Authentication binary built!"
 
 ## build_logger: builds the logger binary as a linux executable
