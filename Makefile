@@ -44,7 +44,7 @@ build_listener:
 ## build_mail: builds the mail binary as a linux executable
 build_mail:
 	@echo "Building mailer binary..."
-	cd mail-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${MAIL_BINARY} .
+	cd mail-service && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ${MAIL_BINARY} ./cmd/api
 	@echo "Mailer binary built!"
 
 
