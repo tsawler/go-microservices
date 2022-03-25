@@ -147,7 +147,7 @@ func rpcPushToLogger(function string, data any) (string, error) {
 // authenticate is a stub that we'll never actually use, but it is here
 // as we get used to how to interact with services
 func authenticate(payload Payload) error {
-	// TODO actually authenticate
+	// TODO actually authenticate via JSON
 	log.Printf("Got payload of %v", payload)
 	return nil
 }
