@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// webPort the port that we listen on for api calls
 const webPort = "80"
 
 // Config is the type we'll use as a receiver to share application
