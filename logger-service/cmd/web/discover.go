@@ -10,11 +10,13 @@ import (
 
 // registerService registers the correct entry for this service in etcd
 func (app *Config) registerService() {
+	// get a connection to etcd
 	cli, _ := connectToEtcd()
 	kv := clientv3.NewKV(cli)
 
 	app.Etcd = cli
 
+	// create a lease that lasts 10 seconds
 	lease := clientv3.NewLease(cli)
 	grantResp, err := lease.Grant(context.TODO(), 10)
 	if err != nil {
@@ -35,6 +37,8 @@ func (app *Config) registerService() {
 	go app.listenToKeepAlive(kalRes)
 }
 
+// listenToKeepAlive consumes the responses from etcd, or the lease will not work as expected.
+// We don't have to do anything with them, but we have to consume them.
 func (app *Config) listenToKeepAlive(kalRes <-chan *clientv3.LeaseKeepAliveResponse) {
 	defer func() {
 		if r := recover(); r != nil {
