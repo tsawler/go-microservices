@@ -15,15 +15,6 @@ type Consumer struct {
 	queueName string
 }
 
-// setup opens a channel and declares the exchange
-func (consumer *Consumer) setup() error {
-	channel, err := consumer.conn.Channel()
-	if err != nil {
-		return err
-	}
-	return declareExchange(channel)
-}
-
 // NewConsumer returns a new Consumer
 func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 	consumer := Consumer{
@@ -35,6 +26,15 @@ func NewConsumer(conn *amqp.Connection) (Consumer, error) {
 	}
 
 	return consumer, nil
+}
+
+// setup opens a channel and declares the exchange
+func (consumer *Consumer) setup() error {
+	channel, err := consumer.conn.Channel()
+	if err != nil {
+		return err
+	}
+	return declareExchange(channel)
 }
 
 // Payload is the type used for pushing events to RabbitMQ
