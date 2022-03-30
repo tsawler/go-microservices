@@ -8,6 +8,7 @@ func getExchangeName() string {
 	return "logs_topic"
 }
 
+// declareRandomQueue just creates a random queue
 func declareRandomQueue(ch *amqp.Channel) (amqp.Queue, error) {
 	return ch.QueueDeclare(
 		"",    // name
@@ -19,6 +20,7 @@ func declareRandomQueue(ch *amqp.Channel) (amqp.Queue, error) {
 	)
 }
 
+// declareExchange creates an exchange, with a name
 func declareExchange(ch *amqp.Channel) error {
 	return ch.ExchangeDeclare(
 		getExchangeName(), // name
