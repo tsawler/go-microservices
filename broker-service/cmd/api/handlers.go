@@ -233,6 +233,7 @@ func (app *Config) pushToQueue(name, msg string) error {
 	return nil
 }
 
+// LogViaGRPC takes a JSON payload and logs it using gRPC as the transport
 func (app *Config) LogViaGRPC(w http.ResponseWriter, r *http.Request) {
 	var requestPayload RequestPayload
 
