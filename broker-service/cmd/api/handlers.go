@@ -92,6 +92,42 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app *Config) logViaJSON(w http.ResponseWriter, entry LogPayload) {
+	jsonData, _ := json.MarshalIndent(entry, "", "\t")
+
+	// call the mail service; we need a request, so let's build one, and populate
+	// its body with the jsonData we just created. First we get the correct server
+	// to call from our service map.
+	logServiceURL := "http://logger-service/log"
+
+	request, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		_ = app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
+	defer response.Body.Close()
+
+	// make sure we get back the right status code
+	if response.StatusCode != http.StatusAccepted {
+		_ = app.errorJSON(w, errors.New("error calling logger service"), http.StatusBadRequest)
+		return
+	}
+
+	// send json back to our end user
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Logged!"
+
+	out, _ := json.MarshalIndent(payload, "", "\t")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	_, _ = w.Write(out)
+}
+
 // sendMail sends an email through the mail-service. It receives a json payload
 // of type requestPayload, with MailPayload embedded.
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
