@@ -22,6 +22,8 @@ func (app *Config) routes() http.Handler {
 
 	mux.Use(middleware.Heartbeat("/ping"))
 
+	// this route is just to ensure things work, and is never
+	// used after that
 	mux.Post("/", app.Broker)
 
 	// grpc route
