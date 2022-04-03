@@ -20,6 +20,7 @@ func (app *Config) routes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	// a heartbeat route, to ensure things are up
 	mux.Use(middleware.Heartbeat("/ping"))
 
 	// this route is just to ensure things work, and is never
