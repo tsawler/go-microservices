@@ -72,7 +72,7 @@ services:
 
   # rabbitmq: the rabbitmq server
   rabbitmq:
-    image: 'rabbitmq:3-management'
+    image: 'rabbitmq:3.9-alpine'
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -127,8 +127,6 @@ services:
   # etcd: start etcd server
   etcd:
     image: docker.io/bitnami/etcd:3
-    ports:
-      - "2379:2379"
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     deploy:
