@@ -17,6 +17,33 @@ down:
 	docker-compose down
 	@echo "Docker stopped!"
 
+## build_dockerfiles: builds all dockerfile images
+build_dockerfiles: build_auth build_broker build_listener build_logger build_mail front_end_linux
+	@echo "Building dockerfiles..."
+	docker build -f front-end.dockerfile -t front-end .
+	docker build -f authentication-service.dockerfile -t auth .
+	docker build -f broker-service.dockerfile -t broker .
+	docker build -f listener-service.dockerfile -t listener .
+	docker build -f mail-service.dockerfile -t mailer .
+	docker build -f logger-service.dockerfile -t logger .
+	@echo "Done!"
+
+## front_end_linux: builds linux executable for front end
+front_end_linux:
+	@echo "Building linux version of front end..."
+	cd front-end && env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o frontEndLinux ./cmd/web
+	@echo "Done!"
+
+## swarm_up: starts the swarm
+swarm_up:
+	@echo "Starting swarm..."
+	docker stack deploy -c swarm.yml myapp
+
+## swarm_down: stops the swarm
+swarm_down:
+	@echo "Stopping swarm..."
+	docker stack rm myapp
+
 ## build_auth: builds the authentication binary as a linux executable
 build_auth:
 	@echo "Building authentication binary.."
