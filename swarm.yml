@@ -47,8 +47,7 @@ services:
   mail-service:
     image: mailer
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
     environment:
       MAIL_DOMAIN: localhost
       MAIL_HOST: mailhog
@@ -66,8 +65,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
     volumes:
       - ./db-data/rabbitmq/:/var/lib/rabbitmq/
 
@@ -78,8 +76,7 @@ services:
       - "1025:1025"
       - "8025:8025"
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
 
   # mongo: start MongoDB and ensure that data is stored to a mounted volume
   mongo:
@@ -87,8 +84,7 @@ services:
     ports:
       - "27017:27017"
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
     environment:
       MONGO_INITDB_DATABASE: logs
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -102,8 +98,7 @@ services:
     ports:
       - "5432:5432"
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -117,8 +112,7 @@ services:
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
     deploy:
-      mode: replicated
-      replicas: 1
+      mode: global
     volumes:
       - ./db-data/etcd/:/bitnami/etcd
 
