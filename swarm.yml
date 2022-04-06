@@ -26,8 +26,6 @@ services:
   # authentication-service - handles user auth
   authentication-service:
     image: auth
-#    ports:
-#      - "8081:80"
     deploy:
       mode: replicated
       replicas: 3
