@@ -18,7 +18,7 @@ services:
 
   # listener-service - watches rabbitmq for messages
   listener-service:
-    image: tsawler/listener:1.0.0
+    image: tsawler/listener:1.0.2
     deploy:
       mode: replicated
       replicas: 2

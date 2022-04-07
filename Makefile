@@ -4,6 +4,11 @@ BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
 LISTENER_BINARY=listener
 MAIL_BINARY=mailerServiceApp
+AUTH_VERSION=1.0.0
+BROKER_VERSION=1.0.0
+LISTENER_VERSION=1.0.2
+MAIL_VERSION=1.0.0
+LOGGER_VERSION=1.0.0
 
 ## up: starts all containers in the background without forcing build
 up:
@@ -20,12 +25,20 @@ down:
 ## build_dockerfiles: builds all dockerfile images
 build_dockerfiles: build_auth build_broker build_listener build_logger build_mail front_end_linux
 	@echo "Building dockerfiles..."
-	docker build -f front-end.dockerfile -t front-end .
-	docker build -f authentication-service.dockerfile -t auth .
-	docker build -f broker-service.dockerfile -t broker .
-	docker build -f listener-service.dockerfile -t listener .
-	docker build -f mail-service.dockerfile -t mailer .
-	docker build -f logger-service.dockerfile -t logger .
+	docker build -f front-end.dockerfile -t tsawler/front-end .
+	docker build -f authentication-service.dockerfile -t tsawler/authentication:${AUTH_VERSION} .
+	docker build -f broker-service.dockerfile -t tsawler/broker:1.0.0 .
+	docker build -f listener-service.dockerfile -t tsawler/listener:1.0.2 .
+	docker build -f mail-service.dockerfile -t tsawler/mail:1.0.0 .
+	docker build -f logger-service.dockerfile -t tsawler/logger:1.0.0 .
+
+## push_dockerfiles: pushes tagged versions to docker hub
+push_dockerfiles: build_dockerfiles
+	docker push tsawler/authentication:${AUTH_VERSION}
+	docker push tsawler/broker:${BROKER_VERSION}
+	docker push tsawler/listener:${LISTENER_VERSION}
+	docker push tsawler/mail:${MAIL_VERSION}
+	docker push tsawler/logger:${LOGGER_VERSION}
 	@echo "Done!"
 
 ## front_end_linux: builds linux executable for front end
