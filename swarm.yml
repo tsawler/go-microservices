@@ -9,7 +9,7 @@ services:
 
   # broker-service - main entry point; we call this from the front end
   broker-service:
-    image: broker
+    image: tsawler/broker:1.0.0
     ports:
       - "8080:80"
     deploy:
@@ -18,14 +18,14 @@ services:
 
   # listener-service - watches rabbitmq for messages
   listener-service:
-    image: listener
+    image: tsawler/listener:1.0.0
     deploy:
       mode: replicated
       replicas: 2
 
   # authentication-service - handles user auth
   authentication-service:
-    image: auth
+    image: tsawler/authentication:1.0.0
     deploy:
       mode: replicated
       replicas: 1
@@ -34,7 +34,7 @@ services:
 
   # logger-service: a service to store logs
   logger-service:
-    image: logger
+    image: tsawler/logger:1.0.0
     ports:
       - "8082:80"
     deploy:
@@ -45,7 +45,7 @@ services:
 
   # mail-service - handles sending mail
   mail-service:
-    image: mailer
+    image: tsawler/mail:1.0.0
     deploy:
       mode: global
     environment:
