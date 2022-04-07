@@ -21,14 +21,14 @@ services:
     image: listener
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 2
 
   # authentication-service - handles user auth
   authentication-service:
     image: auth
     deploy:
       mode: replicated
-      replicas: 3
+      replicas: 1
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
 
@@ -61,9 +61,6 @@ services:
   # rabbitmq: the rabbitmq server
   rabbitmq:
     image: 'rabbitmq:3-management'
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     deploy:
       mode: global
     volumes:
@@ -73,7 +70,6 @@ services:
   mailhog:
     image: 'mailhog/mailhog:latest'
     ports:
-      - "1025:1025"
       - "8025:8025"
     deploy:
       mode: global
