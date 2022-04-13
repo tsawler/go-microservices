@@ -20,7 +20,7 @@ spec:
             memory: "256Mi"
             cpu: "500m"
         ports:
-        - containerPort: 1025
+        - containerPort: 80
 
 ---
 
@@ -33,6 +33,6 @@ spec:
   selector:
     app: myapp
   ports:
-  - port: 1025
-    targetPort: 1025
+  - port: 80
+    targetPort: 80
 
