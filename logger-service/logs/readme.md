@@ -9,7 +9,7 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 
 Generate proto.
 
-Then, run command:
+Then, run command (inside logs directory):
 
 ```
 protoc --go_out=. \
