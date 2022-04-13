@@ -75,7 +75,6 @@ services:
     image: 'rabbitmq:3.9-alpine'
     ports:
       - "5672:5672"
-      - "15672:15672"
     deploy:
       mode: replicated
       replicas: 1

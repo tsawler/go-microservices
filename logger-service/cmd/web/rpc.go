@@ -31,6 +31,6 @@ func (r *RPCServer) LogInfo(payload RPCPayload, resp *string) error {
 	}
 
 	// resp is the message sent back to the RPC caller
-	*resp = "Processed payload: " + payload.Name
+	*resp = "Processed payload via RPC: " + payload.Name
 	return nil
 }

@@ -1,9 +1,11 @@
 package event
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"net/rpc"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -149,5 +151,31 @@ func rpcPushToLogger(function string, data any) (string, error) {
 func authenticate(payload Payload) error {
 	// TODO actually authenticate via JSON
 	log.Printf("Got payload of %v", payload)
+	return nil
+}
+
+func logEvent(entry Payload) error {
+	jsonData, _ := json.MarshalIndent(entry, "", "\t")
+
+	logServiceURL := "http://logger-service/log"
+
+	request, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusAccepted {
+		return err
+	}
+
 	return nil
 }
