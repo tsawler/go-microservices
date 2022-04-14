@@ -2,73 +2,73 @@ version: '3'
 
 services:
 
-  # broker-service - main entry point; we call this from the front end
-  broker-service:
-    build:
-      context: .
-      dockerfile: ./broker-service.dockerfile
-    restart: always
-    ports:
-      - "8080:80"
-    deploy:
-      mode: replicated
-      replicas: 1
-
-  # listener-service - watches rabbitmq for messages
-  listener-service:
-    build:
-      context: .
-      dockerfile: ./listener-service.dockerfile
-    deploy:
-      mode: replicated
-      replicas: 1
-
-  # authentication-service - handles user auth
-  authentication-service:
-    build:
-      context: .
-      dockerfile: ./authentication-service.dockerfile
-    restart: always
-    ports:
-      - "8081:80"
-    deploy:
-      mode: replicated
-      replicas: 1
-    environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
-
-  # logger-service: a service to store logs
-  logger-service:
-    build:
-      context: .
-      dockerfile: ./logger-service.dockerfile
-    restart: always
-    ports:
-      - "8082:80"
-    deploy:
-      mode: replicated
-      replicas: 1
-    volumes:
-      - ./logger-service/templates/:/app/templates
-
-  # mail-service - handles sending mail
-  mail-service:
-    build:
-      context: .
-      dockerfile: ./mail-service.dockerfile
-    restart: always
-    deploy:
-      mode: replicated
-      replicas: 1
-    environment:
-      MAIL_DOMAIN: localhost
-      MAIL_HOST: mailhog
-      MAIL_PORT: 1025
-      MAIL_ENCRYPTION: none
-      MAIL_USERNAME: ""
-      MAIL_PASSWORD: ""
-      FROM_NAME: "John Smith"
-      FROM_ADDRESS: john.smith@example.com
+#  # broker-service - main entry point; we call this from the front end
+#  broker-service:
+#    build:
+#      context: .
+#      dockerfile: ./broker-service.dockerfile
+#    restart: always
+#    ports:
+#      - "8080:80"
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#
+#  # listener-service - watches rabbitmq for messages
+#  listener-service:
+#    build:
+#      context: .
+#      dockerfile: ./listener-service.dockerfile
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#
+#  # authentication-service - handles user auth
+#  authentication-service:
+#    build:
+#      context: .
+#      dockerfile: ./authentication-service.dockerfile
+#    restart: always
+#    ports:
+#      - "8081:80"
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#    environment:
+#      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+#
+#  # logger-service: a service to store logs
+#  logger-service:
+#    build:
+#      context: .
+#      dockerfile: ./logger-service.dockerfile
+#    restart: always
+#    ports:
+#      - "8082:80"
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#    volumes:
+#      - ./logger-service/templates/:/app/templates
+#
+#  # mail-service - handles sending mail
+#  mail-service:
+#    build:
+#      context: .
+#      dockerfile: ./mail-service.dockerfile
+#    restart: always
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#    environment:
+#      MAIL_DOMAIN: localhost
+#      MAIL_HOST: mailhog
+#      MAIL_PORT: 1025
+#      MAIL_ENCRYPTION: none
+#      MAIL_USERNAME: ""
+#      MAIL_PASSWORD: ""
+#      FROM_NAME: "John Smith"
+#      FROM_ADDRESS: john.smith@example.com
 
   # rabbitmq: the rabbitmq server
   rabbitmq:

@@ -25,6 +25,8 @@ func (app *Config) routes() http.Handler {
 
 	// this route is just to ensure things work, and is never
 	// used after that
+	mux.Get("/", app.Broker)
+
 	mux.Post("/", app.Broker)
 
 	// grpc route
