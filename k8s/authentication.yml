@@ -17,7 +17,7 @@ spec:
         image: "tsawler/authentication:1.0.1"
         env:
           - name: DSN
-            value: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+            value: "host=host.minikube.internal port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
         resources:
           limits:
             memory: "128Mi"
