@@ -60,8 +60,8 @@ func main() {
 	}
 
 	// connect to etcd and register service
-	app.registerService()
-	defer app.Etcd.Close()
+	//app.registerService()
+	//defer app.Etcd.Close()
 
 	// Start webserver in its own GoRoutine
 	go app.serve()

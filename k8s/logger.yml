@@ -14,12 +14,14 @@ spec:
     spec:
       containers:
       - name: logger
-        image: "tsawler/logger:1.0.0"
+        image: "tsawler/logger:1.0.1"
         env:
           - name: RABBIT_URL
             value: "amqp://guest:guest@rabbitmq"
         ports:
           - containerPort: 80
+          - containerPort: 5001
+          - containerPort: 50001
 
 ---
 
