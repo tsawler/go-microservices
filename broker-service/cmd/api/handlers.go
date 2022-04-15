@@ -130,7 +130,8 @@ func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 	// call the mail service; we need a request, so let's build one, and populate
 	// its body with the jsonData we just created. First we get the correct server
 	// to call from our service map.
-	mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
+	//mailServiceURL := fmt.Sprintf("http://%s/send", app.GetServiceURL("mail"))
+	mailServiceURL := fmt.Sprintf("http://%s/send", "mail-service")
 
 	// now post to the mail service
 	request, err := http.NewRequest("POST", mailServiceURL, bytes.NewBuffer(jsonData))
@@ -171,7 +172,8 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	// call the authentication-service; we need a request, so let's build one, and populate
 	// its body with the jsonData we just created. First we get the correct url for our
 	// auth service from our service map.
-	authServiceURL := fmt.Sprintf("http://%s/authenticate", app.GetServiceURL("auth"))
+	//authServiceURL := fmt.Sprintf("http://%s/authenticate", app.GetServiceURL("auth"))
+	authServiceURL := fmt.Sprintf("http://%s/authenticate", "authentication-service")
 
 	// now build the request and set header
 	request, err := http.NewRequest("POST", authServiceURL, bytes.NewBuffer(jsonData))

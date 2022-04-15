@@ -41,10 +41,11 @@ func connect() (*amqp.Connection, error) {
 	var counts int64
 	var backOff = 1 * time.Second
 	var connection *amqp.Connection
+	var rabbitURL = os.Getenv("RABBIT_URL")
 
 	// don't continue until rabbitmq is ready
 	for {
-		c, err := amqp.Dial("amqp://guest:guest@rabbitmq")
+		c, err := amqp.Dial(rabbitURL)
 		if err != nil {
 			fmt.Println("RabbitMQ not yet ready...")
 			counts++

@@ -17,11 +17,11 @@ const webPort = "80"
 // Config is the type we'll use as a receiver to share application
 // configuration around our app.
 type Config struct {
-	Rabbit          *amqp.Connection
-	Etcd            *clientv3.Client
-	LogServiceURLs  map[string]string
-	MailServiceURLs map[string]string
-	AuthServiceURLs map[string]string
+	Rabbit         *amqp.Connection
+	Etcd           *clientv3.Client
+	LogServiceURLs map[string]string
+	//MailServiceURLs map[string]string
+	//AuthServiceURLs map[string]string
 }
 
 func main() {
@@ -34,23 +34,23 @@ func main() {
 	defer rabbitConn.Close()
 
 	// don't continue until etcd is ready
-	etcConn, err := connectToEtcd()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer etcConn.Close()
+	//etcConn, err := connectToEtcd()
+	//if err != nil {
+	//	fmt.Println(err)
+	//	os.Exit(1)
+	//}
+	//defer etcConn.Close()
 
 	app := Config{
 		Rabbit: rabbitConn,
-		Etcd:   etcConn,
+		//Etcd:   etcConn,
 	}
 
 	// get service urls
-	app.getServiceURLs()
+	//app.getServiceURLs()
 
 	// watch service urls
-	go app.watchEtcd()
+	//go app.watchEtcd()
 
 	log.Println("Starting broker service on port", webPort)
 
@@ -71,9 +71,10 @@ func main() {
 func connectToRabbit() (*amqp.Connection, error) {
 	var rabbitConn *amqp.Connection
 	var counts int64
+	var rabbitURL = os.Getenv("RABBIT_URL")
 
 	for {
-		connection, err := amqp.Dial("amqp://guest:guest@rabbitmq")
+		connection, err := amqp.Dial(rabbitURL)
 		if err != nil {
 			fmt.Println("rabbitmq not ready...")
 			counts++
