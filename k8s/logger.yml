@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logger-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logger-service
+  template:
+    metadata:
+      labels:
+        app: logger-service
+    spec:
+      containers:
+      - name: logger
+        image: "tsawler/logger:1.0.0"
+        env:
+          - name: RABBIT_URL
+            value: "amqp://guest:guest@rabbitmq"
+        ports:
+          - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: logger-service
+spec:
+  selector:
+    app: logger-service
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web-port
+      targetPort: 80
+    - protocol: TCP
+      port: 5001
+      name: rpc-port
+      targetPort: 5001
+    - protocol:
+      port: 50001
+      name: grpc-port
+      targetPort: 50001

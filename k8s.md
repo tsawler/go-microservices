@@ -3,9 +3,6 @@
 
 minikube start --nodes=2
 
-minikube addons enable ingress
-
-
 minikube status
 docker ps
 kubectl get nodes
@@ -17,7 +14,7 @@ kubectl get svc
 kubectl get deployments
 
 # hit the app
-expose deployment myapp --type=LoadBalancer --port=8080 --target-port=80
+kubectl expose deployment broker --type=LoadBalancer --port=8080 --target-port=80
 minikube tunnel
 
 # stop service/app
