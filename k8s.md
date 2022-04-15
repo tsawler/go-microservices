@@ -8,10 +8,12 @@ docker ps
 kubectl get nodes
 kubectl get pods -A
 kubectl get pods
-kubectl apply -f deployment.yml
+kubectl apply -f deployment.yml or kubectl apply -f <folder>
 kubectl get pods
 kubectl get svc
 kubectl get deployments
+
+
 
 # hit the app
 kubectl expose deployment broker --type=LoadBalancer --port=8080 --target-port=80
