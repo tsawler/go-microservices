@@ -21,3 +21,9 @@ docker service scale <name>=<instances>
 ```bash
 docker service update --image tsawler/listener:1.0.1 myapp_listener-service
  ```
+
+## Bringing swarm down
+To stop them, scale all services to 0, or just type
+```bash
+docker swarm leave
+```
