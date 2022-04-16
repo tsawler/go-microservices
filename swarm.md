@@ -13,7 +13,7 @@ docker push tsawler/front-end:tag1
 docker stack deploy -c <stack>.yml <name>
 docker stack rm <name>
 docker service ls
-docker service scale name=#
+docker service scale <name>=<instances>
 ```
 
 ## Updating (scale first)
