@@ -12,7 +12,6 @@ docker push tsawler/front-end:tag1
 ```bash
 docker swarm init
 docker stack deploy -c <stack>.yml <name>
-docker stack rm <name>
 docker service ls
 docker service scale <name>=<instances>
 ```
@@ -23,6 +22,10 @@ docker service update --image tsawler/listener:1.0.1 myapp_listener-service
  ```
 
 ## Bringing swarm down
+Easy method:
+```bash
+docker stack rm myapp
+```
 To stop them, scale all services to 0, or just type
 ```bash
 docker swarm leave

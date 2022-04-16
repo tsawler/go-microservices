@@ -2,114 +2,114 @@ version: '3'
 
 services:
 
-#  # broker-service - main entry point; we call this from the front end
-#  broker-service:
-#    build:
-#      context: .
-#      dockerfile: ./broker-service.dockerfile
+  # broker-service - main entry point; we call this from the front end
+  broker-service:
+    build:
+      context: .
+      dockerfile: ./broker-service.dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      RABBIT_URL: "amqp://guest:guest@rabbitmq"
+
+  # listener-service - watches rabbitmq for messages
+  listener-service:
+    build:
+      context: .
+      dockerfile: ./listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      RABBIT_URL: "amqp://guest:guest@rabbitmq"
+
+  # authentication-service - handles user auth
+  authentication-service:
+    build:
+      context: .
+      dockerfile: ./authentication-service.dockerfile
+    restart: always
+    ports:
+      - "8081:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+
+  # logger-service: a service to store logs
+  logger-service:
+    build:
+      context: .
+      dockerfile: ./logger-service.dockerfile
+    restart: always
+    ports:
+      - "8082:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./logger-service/templates/:/app/templates
+
+  # mail-service - handles sending mail
+  mail-service:
+    build:
+      context: .
+      dockerfile: ./mail-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_ENCRYPTION: none
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      FROM_NAME: "John Smith"
+      FROM_ADDRESS: john.smith@example.com
+
+  # rabbitmq: the rabbitmq server
+  rabbitmq:
+    image: 'rabbitmq:3.9-alpine'
+    ports:
+      - "5672:5672"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
+
+  # mailhog: a fake smtp server with a web interface
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  # mongo: start MongoDB and ensure that data is stored to a mounted volume
+  mongo:
+    image: 'mongo:4.2.17-bionic'
+    ports:
+      - "27017:27017"
 #    restart: always
-#    ports:
-#      - "8080:80"
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    environment:
-#      RABBIT_URL: "amqp://guest:guest@rabbitmq"
-#
-#  # listener-service - watches rabbitmq for messages
-#  listener-service:
-#    build:
-#      context: .
-#      dockerfile: ./listener-service.dockerfile
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    environment:
-#      RABBIT_URL: "amqp://guest:guest@rabbitmq"
-#
-#  # authentication-service - handles user auth
-#  authentication-service:
-#    build:
-#      context: .
-#      dockerfile: ./authentication-service.dockerfile
-#    restart: always
-#    ports:
-#      - "8081:80"
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    environment:
-#      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
-#
-#  # logger-service: a service to store logs
-#  logger-service:
-#    build:
-#      context: .
-#      dockerfile: ./logger-service.dockerfile
-#    restart: always
-#    ports:
-#      - "8082:80"
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    volumes:
-#      - ./logger-service/templates/:/app/templates
-#
-#  # mail-service - handles sending mail
-#  mail-service:
-#    build:
-#      context: .
-#      dockerfile: ./mail-service.dockerfile
-#    restart: always
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    environment:
-#      MAIL_DOMAIN: localhost
-#      MAIL_HOST: mailhog
-#      MAIL_PORT: 1025
-#      MAIL_ENCRYPTION: none
-#      MAIL_USERNAME: ""
-#      MAIL_PASSWORD: ""
-#      FROM_NAME: "John Smith"
-#      FROM_ADDRESS: john.smith@example.com
-#
-#  # rabbitmq: the rabbitmq server
-#  rabbitmq:
-#    image: 'rabbitmq:3.9-alpine'
-#    ports:
-#      - "5672:5672"
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    volumes:
-#      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
-#
-#  # mailhog: a fake smtp server with a web interface
-#  mailhog:
-#    image: 'mailhog/mailhog:latest'
-#    ports:
-#      - "1025:1025"
-#      - "8025:8025"
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#
-#  # mongo: start MongoDB and ensure that data is stored to a mounted volume
-#  mongo:
-#    image: 'mongo:4.2.17-bionic'
-#    ports:
-#      - "27017:27017"
-##    restart: always
-#    deploy:
-#      mode: replicated
-#      replicas: 1
-#    environment:
-#      MONGO_INITDB_DATABASE: logs
-#      MONGO_INITDB_ROOT_USERNAME: admin
-#      MONGO_INITDB_ROOT_PASSWORD: password
-#    volumes:
-#      - ./db-data/mongo/:/data/db
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MONGO_INITDB_DATABASE: logs
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db
 
   # postgres: start Postgres, and ensure that data is stored to a mounted volume
   postgres:
