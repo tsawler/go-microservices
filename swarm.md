@@ -10,6 +10,7 @@ docker push tsawler/front-end:tag1
 ## Manage
 
 ```bash
+docker swarm init
 docker stack deploy -c <stack>.yml <name>
 docker stack rm <name>
 docker service ls
