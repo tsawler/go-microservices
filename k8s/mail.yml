@@ -15,6 +15,21 @@ spec:
       containers:
       - name: mail-service
         image: "tsawler/mail:1.0.0"
+        env:
+          - name: MAIL_DOMAIN
+            value: "localhost"
+          - name: MAIL_PORT
+            value: "1025"
+          - name: MAIL_ENCRYPTION
+            value: "localhost"
+          - name: MAIL_USERNAME
+            value: ""
+          - name: MAIL_PASSWORD
+            value: ""
+          - name: FROM_NAME
+            value: "John Smith"
+          - name: FROM_ADDRESS
+            value: "john.smith@example.com"
         ports:
           - containerPort: 80
 
