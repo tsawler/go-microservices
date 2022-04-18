@@ -12,6 +12,7 @@ kubectl apply -f deployment.yml # or kubectl apply -f <folder>
 kubectl get pods
 kubectl get svc
 kubectl get deployments
+minikube dashboard
 ```
 
 # hit the app
