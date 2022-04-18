@@ -20,7 +20,7 @@ docker service scale <name>=<instances>
 ## Updating (scale first)
 ```bash
 docker service update --image tsawler/listener:1.0.1 myapp_listener-service
- ```
+```
 
 ## Bringing swarm down
 Easy method:
