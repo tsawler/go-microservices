@@ -47,7 +47,8 @@ services:
   mail-service:
     image: tsawler/mail-service:1.0.0
     deploy:
-      mode: global
+      mode: replicated
+      replicas: 1
     environment:
       MAIL_DOMAIN: localhost
       MAIL_HOST: mailhog
