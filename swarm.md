@@ -11,7 +11,7 @@ docker push tsawler/front-end:tag1
 
 ```bash
 docker swarm init
-docker swarm join-token
+docker swarm join-token worker
 docker swarm join-token manager
 docker stack deploy -c <stack>.yml <name>
 docker service ls
