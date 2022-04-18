@@ -3,7 +3,7 @@
 
 ## Build images:
 ```bash
-docker build -f front-end.dockerfile -t front-end:tag1 .
+docker build -f front-end.dockerfile -t tsawler/front-end:tag1 .
 docker push tsawler/front-end:tag1
 ```
 
