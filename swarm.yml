@@ -7,9 +7,15 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+      placement:
+        constraints:
+          - node.hostname == docker-desktop
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
     ports:
       - "80:80"
-      - "443:443"
+      - "444:443"
 
   front-end:
     image: tsawler/front-end:1.0.0
@@ -123,3 +129,7 @@ services:
     volumes:
       - ./db-data/etcd/:/bitnami/etcd
 
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
