@@ -19,7 +19,7 @@ watch docker service ls
 docker service scale <name>=<instances>
 ```
 
-## Updating (scale first)
+## Updating (pull image and scale first)
 ```bash
 docker service update --image tsawler/listener:1.0.1 myapp_listener-service
 ```
