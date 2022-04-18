@@ -13,6 +13,7 @@ docker push tsawler/front-end:tag1
 docker swarm init
 docker stack deploy -c <stack>.yml <name>
 docker service ls
+watch docker service ls
 docker service scale <name>=<instances>
 ```
 
