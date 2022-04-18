@@ -2,14 +2,23 @@ version: '3'
 
 services:
 
-  front-end:
-    image: front-end
+  caddy:
+    image: tsawler/micro-caddy:1.0.2
+    deploy:
+      mode: replicated
+      replicas: 1
     ports:
       - "80:80"
 
+  front-end:
+    image: tsawler/front-end:1.0.0
+    deploy:
+      mode: replicated
+      replicas: 1
+
   # broker-service - main entry point; we call this from the front end
   broker-service:
-    image: tsawler/broker-service:1.0.0
+    image: tsawler/broker-service:1.0.1
     ports:
       - "8080:80"
     deploy:

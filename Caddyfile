@@ -29,5 +29,5 @@ localhost:80 {
 }
 
 backend:80 {
-	reverse_proxy: http://broker-service:8080
+	reverse_proxy http://broker-service:8080
 }
