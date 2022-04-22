@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: broker-service
-        image: "tsawler/broker:1.0.2"
+        image: "tsawler/broker-service:1.0.1"
         env:
           - name: RABBIT_URL
             value: "amqp://guest:guest@rabbitmq"

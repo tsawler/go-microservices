@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mail-service
-        image: "tsawler/mail:1.0.0"
+        image: "tsawler/mail-service:1.0.0"
         env:
           - name: MAIL_DOMAIN
             value: "localhost"

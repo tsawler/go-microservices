@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: listener
-        image: "tsawler/listener:1.0.0"
+        image: "tsawler/listener-service:1.0.0"
         env:
           - name: RABBIT_URL
             value: "amqp://guest:guest@rabbitmq"
