@@ -1,5 +1,3 @@
-
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -8,14 +6,14 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: ms.info
+    - host: broker-service.local
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: myapp
+                name: broker-service
                 port:
-                  number: 80
+                  number: 8080
 
